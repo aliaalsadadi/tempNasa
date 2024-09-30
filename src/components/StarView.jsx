@@ -2,7 +2,6 @@
 import {
 	Card,
 	CardContent,
-	createTheme,
 	CssBaseline,
 	ThemeProvider,
 	Typography,
@@ -12,11 +11,7 @@ import { Canvas } from '@react-three/fiber';
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Stars from './Stars';
-const darkTheme = createTheme({
-	palette: {
-		mode: 'dark',
-	},
-});
+import { darkTheme } from '../constants';
 function StarView() {
 	const [activeStar, setActiveStar] = useState(null);
 	const [queryResult, setQueryResult] = useState(null);
@@ -85,7 +80,7 @@ function StarView() {
 									sx={{
 										minWidth: 275,
 										maxWidth: 275,
-										maxHeight: 200,
+										maxHeight: 275,
 										display: 'flex',
 										justifyContent: 'center',
 										alignItems: 'center',
@@ -108,9 +103,16 @@ function StarView() {
 											variant="body2"
 											sx={{
 												textAlign: 'center',
-												marginTop: -10,
+												justifyContent: 'center',
+												alignItems: 'center',
+												position: 'relative',
+												transform:
+													'translate(0%, -70%)',
 											}}
 										>
+											Designation:{' '}
+											{activeStar?.designation}
+											<br />
 											Source id: {activeStar?.id}
 											<br />
 											Parallax: {activeStar?.parallax}
@@ -118,6 +120,9 @@ function StarView() {
 											Right ascension: {activeStar?.ra}
 											<br />
 											Declination: {activeStar?.dec}
+											<br />
+											Temperature: {activeStar?.temp}
+											&deg;K
 										</Typography>
 									</CardContent>
 								</Card>

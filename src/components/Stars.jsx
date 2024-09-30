@@ -1,6 +1,7 @@
 import { useEffect, useRef, useMemo } from 'react'; // Added useState
 import * as THREE from 'three';
 import { useFrame, useThree } from '@react-three/fiber';
+import { Star } from '@mui/icons-material';
 
 function Stars({ data, setActiveStar }) {
 	const groupRef = useRef();
@@ -72,11 +73,13 @@ function Stars({ data, setActiveStar }) {
 				distanceScalingFactor;
 			const z = distance * Math.sin(decInRadians) * distanceScalingFactor;
 			starGroup.userData = {
+				designation: starData.designation,
 				id: starData.source_id,
 				ra: starData.ra,
 				dec: starData.dec,
 				distance: starData.distance,
 				parallax: starData.parallax,
+				temp: starData.temp,
 			};
 			starGroup.position.set(x, y, z);
 			starGroup.add(coreStar);

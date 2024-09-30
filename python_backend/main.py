@@ -3,7 +3,7 @@ from astropy.coordinates import SkyCoord
 import astropy.units as u
 from fastapi import FastAPI
 from pydantic import BaseModel
-from astro import get_stars as query_stars  # Renaming imported function
+from astro import get_planets, get_stars as query_stars  # Renaming imported function
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
@@ -30,4 +30,10 @@ class StarQuery(BaseModel):
 async def handle_get_stars(query: StarQuery):
     print(query.ra, query.dec)
     result = query_stars(query.ra, query.dec)
+    return result
+
+
+@app.get("/getPlanets")
+async def handle_get_planets():
+    result = get_planets()
     return result

@@ -11,6 +11,10 @@ myenv
 venv
 env
 
+#python cache
+__pycache__/
+*.pyc
+
 node_modules
 dist
 dist-ssr

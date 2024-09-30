@@ -1,12 +1,29 @@
+from functools import cache
 from astroquery.gaia import Gaia
+from astroquery.ipac.nexsci.nasa_exoplanet_archive.core import NasaExoplanetArchive
 from astropy.coordinates import SkyCoord
 import astropy.units as u
 import numpy as np
+import requests
+
 
 Gaia.ROW_LIMIT = 20000
 
 
 def color_index_to_rgb(temp: float):
+    """
+    Convert a color index (surface temperature) to a corresponding RGB color.
+
+    Parameters
+    ----------
+    temp : float
+        The color index, in Kelvin.
+
+    Returns
+    -------
+    str
+        The corresponding RGB color, as a hex string.
+    """
     if temp >= 30000:
         return "#9bb0ff"  # O class - Blue
     elif temp >= 10000:
@@ -24,10 +41,37 @@ def color_index_to_rgb(temp: float):
 
 
 def get_stars(ra: float, dec: float, box_size: float = 3.0):
+    """
+    Performs a box search around the given RA and Dec coordinates, fetching
+    the Gaia DR3 data for stars within the box.
 
-    # Build the SQL query for the box search
+    Parameters
+    ----------
+    ra : float
+        The right ascension of the center of the box, in degrees.
+    dec : float
+        The declination of the center of the box, in degrees.
+    box_size : float, optional
+        The size of the box, in degrees. Defaults to 3.0.
+
+    Returns
+    -------
+    A list of dictionaries, containing the data for the stars in the box.
+    Each dictionary has the following keys:
+
+    - designation: A string with the designation of the star.
+    - source_id: A string with the source ID of the star.
+    - ra: The right ascension of the star, in degrees.
+    - dec: The declination of the star, in degrees.
+    - phot_g_mean_mag: The mean magnitude of the star in the G band.
+    - distance: The distance to the star, in parsecs.
+    - parallax: The parallax of the star, in mas.
+    - temp: The effective temperature of the star, in Kelvin.
+    - hex_color: A string with the hex color code corresponding to the
+      star's effective temperature, according to the B-V color index.
+    """
     query = f"""
-        SELECT source_id, ra, dec, phot_g_mean_mag, distance_gspphot, parallax, bp_rp, bp_g, g_rp , teff_gspphot
+        SELECT source_id, designation ,ra, dec, phot_g_mean_mag, distance_gspphot, parallax, bp_rp, bp_g, g_rp , teff_gspphot
         FROM gaiadr3.gaia_source
         WHERE
             1=CONTAINS(
@@ -49,6 +93,7 @@ def get_stars(ra: float, dec: float, box_size: float = 3.0):
 
     filtered_result = [
         {
+            "designation": str(row["designation"]),
             "source_id": str(row["source_id"]),
             "ra": float(row["ra"]),
             "dec": float(row["dec"]),
@@ -59,9 +104,32 @@ def get_stars(ra: float, dec: float, box_size: float = 3.0):
             ),
             "distance": float(row["distance_gspphot"]),
             "parallax": float(row["parallax"]),
+            "temp": float(row["teff_gspphot"]),
             "hex_color": color_index_to_rgb(row["teff_gspphot"]),
         }
         for row in result
     ]
 
     return filtered_result
+
+
+def get_planets(discover_method: str = "Transit"):
+    where_query = f"discoverymethod like '{discover_method}'"
+    print(where_query)
+    result = NasaExoplanetArchive.query_criteria(
+        table="pscomppars",
+        select="top 100 pl_name,ra,dec",
+        where=where_query,
+        cache=True,
+    )
+
+    result = [
+        {
+            "name": row["pl_name"],
+            "ra": float(row["ra"].value),
+            "dec": float(row["dec"].value),
+        }
+        for row in result
+    ]
+    print(result)
+    return result
