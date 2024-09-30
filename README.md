@@ -8,7 +8,10 @@
     6. pip install -r requirements.txt
     7. cd python_backend/
     8. uvicorn main:app --reload
-
+# TODO 
+    1. Add custom cursor
+    2. ambient background and clicking sounds for interactivity
+    3. landing page ?? 
 # References
 https://astronomy.stackexchange.com/questions/46664/straightforward-conversion-from-gaia-gdr3-photometry-to-rgb-values
 https://www.schoolsobservatory.org/learn/astro/stars/class
