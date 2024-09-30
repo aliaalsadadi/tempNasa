@@ -69,8 +69,9 @@ function StarView() {
 						<Html
 							as="div"
 							style={{
-								position: 'absolute',
-								transform: 'translate(-50%, -50%)',
+								position: 'relative',
+								top: -350, // Adjust top position
+								right: 500, // Adjust left position
 								padding: 10,
 							}}
 						>
@@ -85,7 +86,7 @@ function StarView() {
 										justifyContent: 'center',
 										alignItems: 'center',
 										textAlign: 'center',
-										position: 'relative',
+										position: 'absolute',
 									}}
 									variant="outlined"
 								>
@@ -105,9 +106,6 @@ function StarView() {
 												textAlign: 'center',
 												justifyContent: 'center',
 												alignItems: 'center',
-												position: 'relative',
-												transform:
-													'translate(0%, -70%)',
 											}}
 										>
 											Designation:{' '}
@@ -121,7 +119,7 @@ function StarView() {
 											<br />
 											Declination: {activeStar?.dec}
 											<br />
-											Temperature: {activeStar?.temp}
+											Temperature: {activeStar?.temp}{' '}
 											&deg;K
 										</Typography>
 									</CardContent>
