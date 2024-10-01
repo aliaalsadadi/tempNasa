@@ -12,6 +12,8 @@
     1. Add custom cursor
     2. ambient background and clicking sounds for interactivity
     3. landing page ?? 
+    4. improve logo in public folder
+    5. add constellation mechanism
 # References
 https://astronomy.stackexchange.com/questions/46664/straightforward-conversion-from-gaia-gdr3-photometry-to-rgb-values
 https://www.schoolsobservatory.org/learn/astro/stars/class
