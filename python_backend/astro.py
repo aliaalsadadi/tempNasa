@@ -116,28 +116,36 @@ def get_stars(ra: float, dec: float, box_size: float = 3.0):
 
 def get_planets(discover_method: str = None):
     """
-    table columns comes from here https://exoplanetarchive.ipac.caltech.edu/docs/API_PS_columns.html
+    table columns come from here https://exoplanetarchive.ipac.caltech.edu/docs/API_PS_columns.html
     """
-    # Construct the where query only if discover_method is provided
-    where_query = (
-        f"discoverymethod like '{discover_method}'" if discover_method else None
-    )
+    # Construct the where query based on discovery method and non-null pl_masse
+    where_conditions = []
+
+    if discover_method:
+        where_conditions.append(f"discoverymethod like '{discover_method}'")
+
+    # Ensure pl_masse is not null
+    where_conditions.append("pl_masse is not null")
+    where_conditions.append("pl_radj is not null")
+    # Combine where conditions with 'AND'
+    where_query = " AND ".join(where_conditions) if where_conditions else None
     print(where_query)
 
     # Define the parameters for the query
     query_params = {
         "table": "pscomppars",
-        "select": "top 100 pl_name,disc_year,ra,dec,discoverymethod,pl_rade",
+        "select": "top 100 pl_name,disc_year,ra,dec,discoverymethod,pl_rade,pl_radj,pl_masse,pl_massj",
         "cache": True,
     }
 
-    # Add the where parameter only if a discover_method is specified
+    # Add the where parameter only if there are conditions
     if where_query:
         query_params["where"] = where_query
 
     # Perform the query
     result = NasaExoplanetArchive.query_criteria(**query_params)
     print(result)
+
     # Process the result
     result = [
         {
@@ -147,6 +155,9 @@ def get_planets(discover_method: str = None):
             "disc_year": int(row["disc_year"]),
             "discover_method": row["discoverymethod"],
             "pl_rade": float(row["pl_rade"].value),
+            "pl_radj": float(row["pl_radj"].value),
+            "pl_masse": float(row["pl_masse"]),
+            "pl_massj": float(row["pl_massj"]),
         }
         for row in result
     ]

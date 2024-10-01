@@ -9,7 +9,7 @@ function PlanetView() {
 	const [queryResult, setQueryResult] = useState(null);
 	const [currentPage, setCurrentPage] = useState(1);
 	const apiUrl = 'http://127.0.0.1:8000/getPlanets';
-	const itemsPerPage = 8;
+	const itemsPerPage = 5;
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -45,22 +45,29 @@ function PlanetView() {
 	return (
 		<ThemeProvider theme={darkTheme}>
 			<CssBaseline />
-			<Grid
-				container
-				spacing={{ xs: 2, md: 3 }}
-				columns={{ xs: 4, sm: 8, md: 12 }}
+			<div
 				style={{
-					display: 'flex',
-					justifyContent: 'center',
-					marginTop: 20,
+					height: '500px', // Set the height of the scrollable container
+					overflowY: 'auto', // Enable vertical scrolling
 				}}
 			>
-				{currentPlanets.map(planetData => (
-					<Grid item xs={2} sm={4} md={4} key={planetData.name}>
-						<PlanetCard data={planetData} />
-					</Grid>
-				))}
-			</Grid>
+				<Grid
+					container
+					spacing={{ xs: 2, md: 3 }}
+					columns={{ xs: 4, sm: 8, md: 12 }}
+					style={{
+						display: 'flex',
+						justifyContent: 'center',
+						marginTop: 20,
+					}}
+				>
+					{currentPlanets.map(planetData => (
+						<Grid item xs={2} sm={4} md={4} key={planetData.name}>
+							<PlanetCard data={planetData} />
+						</Grid>
+					))}
+				</Grid>
+			</div>
 			{/* Add pagination controls */}
 			{queryResult && (
 				<Pagination

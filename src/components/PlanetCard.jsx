@@ -27,14 +27,26 @@ function PlanetCard({ data }) {
 				</Typography>
 				<Box sx={{ mt: 2 }}>
 					<Typography variant="body2">
-						Discovery Year: {data?.disc_year || 'N/A'}
+						Discovery Year: {data?.disc_year}
 					</Typography>
 					<Typography variant="body2">
-						Discovery Method: {data?.discover_method || 'N/A'}
+						Discovery Method: {data?.discover_method}
 					</Typography>
 					<Typography variant="body2">
-						Planet Radius (in units of radius of the Earth):{' '}
-						{data?.pl_rade || 'N/A'} 🌍
+						Planet Radius (in units of radius of Earth):{' '}
+						{data?.pl_rade} 🌍
+					</Typography>
+					<Typography variant="body2">
+						Planet Mass (in units of massess of Earth):{' '}
+						{data?.pl_masse} 🌍
+					</Typography>
+					<Typography variant="body2">
+						Planet Radius (in units of radius of Jupiter):{' '}
+						{data?.pl_radj} 🪐
+					</Typography>
+					<Typography variant="body2">
+						Planet Mass (in units of massess of Jupiter):{' '}
+						{data?.pl_massj} 🪐
 					</Typography>
 					{/* Add more planet details here */}
 				</Box>
