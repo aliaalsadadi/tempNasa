@@ -9,7 +9,7 @@
     7. cd python_backend/
     8. uvicorn main:app --reload
 # TODO 
-    1. Add custom cursor
+    1. Add custom cursor 
     2. ambient background and clicking sounds for interactivity
     3. landing page ?? 
     4. improve logo in public folder

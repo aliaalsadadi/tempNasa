@@ -69,10 +69,9 @@ function StarView() {
 						<Html
 							as="div"
 							style={{
-								position: 'relative',
-								top: -350, // Adjust top position
-								right: 500, // Adjust left position
-								padding: 10,
+								position: 'absolute',
+								top: -300,
+								right: 450,
 							}}
 						>
 							<ThemeProvider theme={darkTheme}>
@@ -86,7 +85,6 @@ function StarView() {
 										justifyContent: 'center',
 										alignItems: 'center',
 										textAlign: 'center',
-										position: 'absolute',
 									}}
 									variant="outlined"
 								>
@@ -98,7 +96,6 @@ function StarView() {
 										>
 											Star Information
 										</Typography>
-
 										<Typography
 											color="text.secondary"
 											variant="body2"

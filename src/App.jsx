@@ -7,15 +7,19 @@ import '@fontsource/roboto/700.css';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'; // Import Router and Route components
 import StarView from './components/StarView';
 import PlanetView from './components/PlanetView';
+import AnimatedCursor from 'react-animated-cursor';
 
 function App() {
 	return (
-		<Router>
-			<Routes>
-				<Route path="/stars/:ra/:dec" element={<StarView />} />
-				<Route path="/" element={<PlanetView />} />
-			</Routes>
-		</Router>
+		<div className="App">
+			<AnimatedCursor></AnimatedCursor>
+			<Router>
+				<Routes>
+					<Route path="/stars/:ra/:dec" element={<StarView />} />
+					<Route path="/" element={<PlanetView />} />
+				</Routes>
+			</Router>
+		</div>
 	);
 }
 
