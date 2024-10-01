@@ -42,6 +42,7 @@ def color_index_to_rgb(temp: float):
 
 def get_stars(ra: float, dec: float, box_size: float = 3.0):
     """
+    table columns comes from https://gea.esac.esa.int/archive/documentation/GDR3/Gaia_archive/chap_datamodel/sec_dm_main_source_catalogue/ssec_dm_gaia_source.html
     Performs a box search around the given RA and Dec coordinates, fetching
     the Gaia DR3 data for stars within the box.
 
@@ -113,23 +114,42 @@ def get_stars(ra: float, dec: float, box_size: float = 3.0):
     return filtered_result
 
 
-def get_planets(discover_method: str = "Transit"):
-    where_query = f"discoverymethod like '{discover_method}'"
-    print(where_query)
-    result = NasaExoplanetArchive.query_criteria(
-        table="pscomppars",
-        select="top 100 pl_name,ra,dec",
-        where=where_query,
-        cache=True,
+def get_planets(discover_method: str = None):
+    """
+    table columns comes from here https://exoplanetarchive.ipac.caltech.edu/docs/API_PS_columns.html
+    """
+    # Construct the where query only if discover_method is provided
+    where_query = (
+        f"discoverymethod like '{discover_method}'" if discover_method else None
     )
+    print(where_query)
 
+    # Define the parameters for the query
+    query_params = {
+        "table": "pscomppars",
+        "select": "top 100 pl_name,disc_year,ra,dec,discoverymethod,pl_rade",
+        "cache": True,
+    }
+
+    # Add the where parameter only if a discover_method is specified
+    if where_query:
+        query_params["where"] = where_query
+
+    # Perform the query
+    result = NasaExoplanetArchive.query_criteria(**query_params)
+    print(result)
+    # Process the result
     result = [
         {
             "name": row["pl_name"],
             "ra": float(row["ra"].value),
             "dec": float(row["dec"].value),
+            "disc_year": int(row["disc_year"]),
+            "discover_method": row["discoverymethod"],
+            "pl_rade": float(row["pl_rade"].value),
         }
         for row in result
     ]
+
     print(result)
     return result

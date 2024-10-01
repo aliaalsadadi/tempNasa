@@ -1,4 +1,9 @@
 import {
+	faGlobeAfrica,
+	faGlobeAmericas,
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
 	Card,
 	CardContent,
 	Typography,
@@ -22,10 +27,14 @@ function PlanetCard({ data }) {
 				</Typography>
 				<Box sx={{ mt: 2 }}>
 					<Typography variant="body2">
-						RA: {data?.ra || 'N/A'}
+						Discovery Year: {data?.disc_year || 'N/A'}
 					</Typography>
 					<Typography variant="body2">
-						Dec: {data?.dec || 'N/A'}
+						Discovery Method: {data?.discover_method || 'N/A'}
+					</Typography>
+					<Typography variant="body2">
+						Planet Radius (in units of radius of the Earth):{' '}
+						{data?.pl_rade || 'N/A'} 🌍
 					</Typography>
 					{/* Add more planet details here */}
 				</Box>
