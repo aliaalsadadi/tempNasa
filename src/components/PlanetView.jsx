@@ -8,9 +8,8 @@ import Grid from '@mui/material/Grid2';
 function PlanetView() {
 	const [queryResult, setQueryResult] = useState(null);
 	const [currentPage, setCurrentPage] = useState(1);
-	const apiUrl = 'http://127.0.0.1:8000/getPlanets';
+	const apiUrl = `${import.meta.env.VITE_API_URL}/getPlanets`;
 	const itemsPerPage = 5;
-
 	useEffect(() => {
 		const fetchData = async () => {
 			try {

@@ -1,5 +1,6 @@
 /* eslint-disable react/no-unknown-property */
 import {
+	Button,
 	Card,
 	CardContent,
 	CssBaseline,
@@ -14,6 +15,7 @@ import Stars from './Stars';
 import { darkTheme } from '../constants';
 function StarView() {
 	const [activeStar, setActiveStar] = useState(null);
+	const [constellating, setConstellating] = useState(false);
 	const [queryResult, setQueryResult] = useState(null);
 	const [error, setError] = useState(null);
 
@@ -21,7 +23,7 @@ function StarView() {
 
 	useEffect(() => {
 		const fetchData = async () => {
-			fetch('http://127.0.0.1:8000/getStars', {
+			fetch(`${import.meta.env.VITE_API_URL}/getStars`, {
 				method: 'POST',
 				headers: {
 					Accept: 'application/json',
@@ -52,78 +54,90 @@ function StarView() {
 			{/* Canvas Container */}
 			<div className="canvas-container">
 				{queryResult ? (
-					<Canvas
-						camera={{ position: [0, 0, 5] }}
-						style={{
-							background: 'black',
-							height: '100vh',
-							width: '100vw',
-						}}
-					>
-						<ambientLight intensity={0.5} />
-						<Stars
-							data={queryResult}
-							setActiveStar={setActiveStar}
-						/>
-						<OrbitControls />
-						<Html
-							as="div"
+					<>
+						<Button onClick={() => console.log('test')}>
+							Constellates
+						</Button>
+						<Canvas
+							camera={{ position: [0, 0, 5] }}
 							style={{
-								position: 'absolute',
-								top: -300,
-								right: 450,
+								background: 'black',
+								height: '100vh',
+								width: '100vw',
 							}}
 						>
-							<ThemeProvider theme={darkTheme}>
-								<CssBaseline />
-								<Card
-									sx={{
-										minWidth: 275,
-										maxWidth: 275,
-										maxHeight: 275,
-										display: 'flex',
-										justifyContent: 'center',
-										alignItems: 'center',
-										textAlign: 'center',
-									}}
-									variant="outlined"
-								>
-									<CardContent>
-										<Typography
-											variant="h5"
-											component="div"
-											gutterBottom
-										>
-											Star Information
-										</Typography>
-										<Typography
-											color="text.secondary"
-											variant="body2"
-											sx={{
-												textAlign: 'center',
-												justifyContent: 'center',
-												alignItems: 'center',
-											}}
-										>
-											Designation:{' '}
-											{activeStar?.designation}
-											<br />
-											Source id: {activeStar?.id}
-											<br />
-											Parallax: {activeStar?.parallax}
-											<br />
-											Right ascension: {activeStar?.ra}
-											<br />
-											Declination: {activeStar?.dec}
-											<br />
-											Temperature: {activeStar?.temp}{' '}
-											&deg;K
-										</Typography>
-									</CardContent>
-								</Card>
-							</ThemeProvider>
-						</Html>
-					</Canvas>
+							<ambientLight intensity={0.5} />
+							<Stars
+								data={queryResult}
+								setActiveStar={setActiveStar}
+							/>
+
+							<OrbitControls
+								enablePan={!constellating}
+								enableRotate={!constellating}
+							/>
+							<Html
+								as="div"
+								style={{
+									position: 'absolute',
+									top: -300,
+									right: 450,
+								}}
+							>
+								<ThemeProvider theme={darkTheme}>
+									<CssBaseline />
+									<Card
+										sx={{
+											minWidth: 275,
+											maxWidth: 275,
+											maxHeight: 275,
+											display: 'flex',
+											justifyContent: 'center',
+											alignItems: 'center',
+											textAlign: 'center',
+										}}
+										variant="outlined"
+									>
+										<CardContent>
+											<Typography
+												variant="h5"
+												component="div"
+												gutterBottom
+											>
+												Star Information
+											</Typography>
+											<Typography
+												color="text.secondary"
+												variant="body2"
+												sx={{
+													textAlign: 'center',
+													justifyContent: 'center',
+													alignItems: 'center',
+												}}
+											>
+												Designation:{' '}
+												{activeStar?.designation}
+												<br />
+												Source id: {activeStar?.id}
+												<br />
+												Parallax: {activeStar?.parallax}
+												<br />
+												Right ascension:{' '}
+												{activeStar?.ra}
+												<br />
+												Declination: {activeStar?.dec}
+												<br />
+												Temperature: {
+													activeStar?.temp
+												}{' '}
+												&deg;K
+											</Typography>
+										</CardContent>
+									</Card>
+								</ThemeProvider>
+							</Html>
+						</Canvas>
+					</>
 				) : (
 					<h1>Loading...</h1>
 				)}
