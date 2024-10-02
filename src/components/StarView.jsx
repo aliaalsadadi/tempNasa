@@ -1,6 +1,7 @@
 /* eslint-disable react/no-unknown-property */
 import {
 	Button,
+	ButtonGroup,
 	Card,
 	CardContent,
 	CssBaseline,
@@ -13,12 +14,34 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Stars from './Stars';
 import { darkTheme } from '../constants';
+import StarInfoCard from './StarInfoCard';
+
 function StarView() {
 	const [activeStar, setActiveStar] = useState(null);
 	const [constellating, setConstellating] = useState(false);
 	const [queryResult, setQueryResult] = useState(null);
 	const [error, setError] = useState(null);
-
+	const buttons = [
+		<Button
+			key="one"
+			disabled={!constellating}
+			onClick={() => setConstellating(false)}
+		>
+			Cancel
+		</Button>,
+		<Button
+			key="two"
+			onClick={() => {
+				setConstellating(!constellating);
+			}}
+			disabled={constellating}
+		>
+			Constellate
+		</Button>,
+		<Button key="three" disabled={!constellating}>
+			Publish
+		</Button>,
+	];
 	const { ra, dec } = useParams(); // Get ra and dec from URL params
 
 	useEffect(() => {
@@ -55,9 +78,6 @@ function StarView() {
 			<div className="canvas-container">
 				{queryResult ? (
 					<>
-						<Button onClick={() => console.log('test')}>
-							Constellates
-						</Button>
 						<Canvas
 							camera={{ position: [0, 0, 5] }}
 							style={{
@@ -66,10 +86,33 @@ function StarView() {
 								width: '100vw',
 							}}
 						>
+							<Html>
+								<div
+									style={{
+										position: 'absolute',
+										display: 'flex',
+										top: -350,
+										justifyContent: 'center',
+										marginTop: '20px',
+									}}
+								>
+									<ThemeProvider theme={darkTheme}>
+										<ButtonGroup
+											size="large"
+											aria-label="Large button group"
+											variant="contained"
+											color="secondary"
+										>
+											{buttons}
+										</ButtonGroup>
+									</ThemeProvider>
+								</div>
+							</Html>
 							<ambientLight intensity={0.5} />
 							<Stars
 								data={queryResult}
 								setActiveStar={setActiveStar}
+								constellating={constellating}
 							/>
 
 							<OrbitControls
@@ -86,54 +129,9 @@ function StarView() {
 							>
 								<ThemeProvider theme={darkTheme}>
 									<CssBaseline />
-									<Card
-										sx={{
-											minWidth: 275,
-											maxWidth: 275,
-											maxHeight: 275,
-											display: 'flex',
-											justifyContent: 'center',
-											alignItems: 'center',
-											textAlign: 'center',
-										}}
-										variant="outlined"
-									>
-										<CardContent>
-											<Typography
-												variant="h5"
-												component="div"
-												gutterBottom
-											>
-												Star Information
-											</Typography>
-											<Typography
-												color="text.secondary"
-												variant="body2"
-												sx={{
-													textAlign: 'center',
-													justifyContent: 'center',
-													alignItems: 'center',
-												}}
-											>
-												Designation:{' '}
-												{activeStar?.designation}
-												<br />
-												Source id: {activeStar?.id}
-												<br />
-												Parallax: {activeStar?.parallax}
-												<br />
-												Right ascension:{' '}
-												{activeStar?.ra}
-												<br />
-												Declination: {activeStar?.dec}
-												<br />
-												Temperature: {
-													activeStar?.temp
-												}{' '}
-												&deg;K
-											</Typography>
-										</CardContent>
-									</Card>
+									<StarInfoCard
+										activeStar={activeStar}
+									></StarInfoCard>
 								</ThemeProvider>
 							</Html>
 						</Canvas>

@@ -13,7 +13,7 @@
     2. ambient background and clicking sounds for interactivity
     3. landing page ?? 
     4. improve logo in public folder
-    5. add constellation mechanism
+    5. add constellation(connecting stars) mechanism
     6. Make Loading pages
 # References
 https://astronomy.stackexchange.com/questions/46664/straightforward-conversion-from-gaia-gdr3-photometry-to-rgb-values

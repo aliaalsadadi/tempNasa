@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { useFrame, useThree } from '@react-three/fiber';
 import { Star } from '@mui/icons-material';
 
-function Stars({ data, setActiveStar }) {
+function Stars({ data, setActiveStar, constellating }) {
 	const groupRef = useRef();
 	const raycaster = new THREE.Raycaster();
 	const mouse = new THREE.Vector2();
