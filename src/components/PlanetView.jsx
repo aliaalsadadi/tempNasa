@@ -33,8 +33,8 @@ function PlanetView() {
 	}, []);
 
 	// Calculate the current planets to display based on the current page
-	const indexOfLastPlanet = currentPage * itemsPerPage;
-	const indexOfFirstPlanet = indexOfLastPlanet - itemsPerPage;
+	const indexOfLastPlanet = currentPage * itemsPerPage; // 4
+	const indexOfFirstPlanet = indexOfLastPlanet - itemsPerPage; // 0
 	const currentPlanets = queryResult
 		? queryResult.slice(indexOfFirstPlanet, indexOfLastPlanet)
 		: [];

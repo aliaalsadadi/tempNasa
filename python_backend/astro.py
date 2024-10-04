@@ -91,7 +91,7 @@ def get_stars(ra: float, dec: float, box_size: float = 3.0):
     # Execute the query
     job = Gaia.launch_job(query)
     result = job.get_results()
-
+    # StarData
     filtered_result = [
         {
             "designation": str(row["designation"]),
@@ -147,6 +147,7 @@ def get_planets(discover_method: str = None):
     print(result)
 
     # Process the result
+    # PlanetData
     result = [
         {
             "name": row["pl_name"],

@@ -116,8 +116,8 @@ function StarView() {
 							/>
 
 							<OrbitControls
-								enablePan={!constellating}
-								enableRotate={!constellating}
+								enablePan={false}
+								enableRotate={false}
 							/>
 							<Html
 								as="div"

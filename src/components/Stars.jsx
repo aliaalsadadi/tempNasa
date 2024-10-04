@@ -40,14 +40,14 @@ function Stars({ data, setActiveStar, constellating }) {
 		});
 	}, []);
 
-	const distanceScalingFactor = 10; // Adjust as necessary
+	const distanceScalingFactor = 5; // Adjust as necessary
 
 	// Create stars
 	const stars = useMemo(() => {
 		if (!data || data.length === 0) return [];
 
 		return data.map(starData => {
-			const coreGeometry = new THREE.SphereGeometry(0.5, 24, 24);
+			const coreGeometry = new THREE.SphereGeometry(0.75, 24, 24);
 			const coreMaterial = new THREE.MeshBasicMaterial({
 				color: starData.hex_color,
 			});
@@ -92,7 +92,7 @@ function Stars({ data, setActiveStar, constellating }) {
 
 	// Add stars to the group
 	useEffect(() => {
-		if (groupRef.current) {
+		if (groupRef?.current) {
 			groupRef.current.clear();
 			stars.forEach(star => {
 				groupRef.current.add(star);
