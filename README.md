@@ -11,7 +11,7 @@
 # TODO 
     1. Add custom cursor 
     2. ambient background and clicking sounds for interactivity
-    3. landing page ?? 
+    3. landing page ?
     4. improve logo in public folder
     5. add constellation(connecting stars) mechanism
     6. Make Loading pages

@@ -4,12 +4,14 @@ import { useEffect, useState } from 'react';
 import { darkTheme } from '../constants';
 import PlanetCard from './PlanetCard';
 import Grid from '@mui/material/Grid2';
+import spaceBackground from '../assets/space.jpeg'; // Import your space image
 
 function PlanetView() {
 	const [queryResult, setQueryResult] = useState(null);
 	const [currentPage, setCurrentPage] = useState(1);
 	const apiUrl = `${import.meta.env.VITE_API_URL}/getPlanets`;
-	const itemsPerPage = 5;
+	const itemsPerPage = 4;
+
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
@@ -46,41 +48,57 @@ function PlanetView() {
 			<CssBaseline />
 			<div
 				style={{
-					height: '500px', // Set the height of the scrollable container
-					overflowY: 'auto', // Enable vertical scrolling
+					backgroundSize: 'cover', // Make sure the image covers the entire container
+					backgroundPosition: 'center', // Center the image
+					backgroundRepeat: 'no-repeat', // Prevent background image from repeating
+					minHeight: '100vh', // Ensure it covers full viewport height
+					padding: '20px', // Add some padding
 				}}
 			>
-				<Grid
-					container
-					spacing={{ xs: 2, md: 3 }}
-					columns={{ xs: 4, sm: 8, md: 12 }}
+				<div
 					style={{
-						display: 'flex',
-						justifyContent: 'center',
-						marginTop: 20,
+						height: '500px', // Set the height of the scrollable container
+						overflowY: 'auto', // Enable vertical scrolling
 					}}
 				>
-					{currentPlanets.map(planetData => (
-						<Grid item xs={2} sm={4} md={4} key={planetData.name}>
-							<PlanetCard data={planetData} />
-						</Grid>
-					))}
-				</Grid>
+					<Grid
+						container
+						spacing={{ xs: 2, md: 3 }}
+						columns={{ xs: 4, sm: 8, md: 12 }}
+						style={{
+							display: 'flex',
+							justifyContent: 'center',
+							marginTop: 20,
+						}}
+					>
+						{currentPlanets.map(planetData => (
+							<Grid
+								item
+								xs={2}
+								sm={4}
+								md={4}
+								key={planetData.name}
+							>
+								<PlanetCard data={planetData} />
+							</Grid>
+						))}
+					</Grid>
+				</div>
+				{/* Add pagination controls */}
+				{queryResult && (
+					<Pagination
+						count={Math.ceil(queryResult.length / itemsPerPage)}
+						page={currentPage}
+						onChange={handlePageChange}
+						color="primary"
+						style={{
+							marginTop: '20px',
+							display: 'flex',
+							justifyContent: 'center',
+						}}
+					/>
+				)}
 			</div>
-			{/* Add pagination controls */}
-			{queryResult && (
-				<Pagination
-					count={Math.ceil(queryResult.length / itemsPerPage)}
-					page={currentPage}
-					onChange={handlePageChange}
-					color="primary"
-					style={{
-						marginTop: '20px',
-						display: 'flex',
-						justifyContent: 'center',
-					}}
-				/>
-			)}
 		</ThemeProvider>
 	);
 }
