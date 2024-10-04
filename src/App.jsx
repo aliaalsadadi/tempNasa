@@ -12,7 +12,7 @@ import AnimatedCursor from 'react-animated-cursor';
 function App() {
 	return (
 		<div className="App">
-			<AnimatedCursor></AnimatedCursor>
+			{/* <AnimatedCursor></AnimatedCursor> */}
 			<Router>
 				<Routes>
 					<Route path="/stars/:ra/:dec" element={<StarView />} />
