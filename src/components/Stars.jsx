@@ -72,6 +72,7 @@ function Stars({ data, setActiveStar, constellating }) {
 				distanceScalingFactor;
 			const z = distance * Math.sin(decInRadians) * distanceScalingFactor;
 
+			//store star information for use in starInfo card
 			starGroup.userData = {
 				designation: starData.designation,
 				id: starData.source_id,
