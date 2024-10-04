@@ -5,9 +5,8 @@ function StarInfoCard({ activeStar }) {
 	return (
 		<Card
 			sx={{
-				minWidth: 275,
+				minWidth: 250,
 				maxWidth: 275,
-				maxHeight: 275,
 				display: 'flex',
 				justifyContent: 'center',
 				alignItems: 'center',
