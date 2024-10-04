@@ -1,16 +1,17 @@
 import { ThemeProvider } from '@emotion/react';
-import { CssBaseline, Pagination } from '@mui/material';
+import { CssBaseline, Pagination, TextField } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { darkTheme } from '../constants';
 import PlanetCard from './PlanetCard';
-import Grid from '@mui/material/Grid2';
-import spaceBackground from '../assets/space.jpeg'; // Import your space image
+import Grid from '@mui/material/Grid';
+import spaceBackground from '../assets/betterspace.jpg'; // Import your space image
 
 function PlanetView() {
 	const [queryResult, setQueryResult] = useState(null);
 	const [currentPage, setCurrentPage] = useState(1);
+	const [searchQuery, setSearchQuery] = useState('');
 	const apiUrl = `${import.meta.env.VITE_API_URL}/getPlanets`;
-	const itemsPerPage = 4;
+	const itemsPerPage = 6;
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -32,15 +33,24 @@ function PlanetView() {
 		fetchData();
 	}, []);
 
-	// Calculate the current planets to display based on the current page
-	const indexOfLastPlanet = currentPage * itemsPerPage; // 4
-	const indexOfFirstPlanet = indexOfLastPlanet - itemsPerPage; // 0
-	const currentPlanets = queryResult
-		? queryResult.slice(indexOfFirstPlanet, indexOfLastPlanet)
+	// Calculate the current planets to display based on the current page and search query
+	const filteredPlanets = queryResult
+		? queryResult.filter(planet =>
+			planet.name.toLowerCase().includes(searchQuery.toLowerCase())
+		)
 		: [];
+
+	const indexOfLastPlanet = currentPage * itemsPerPage;
+	const indexOfFirstPlanet = indexOfLastPlanet - itemsPerPage;
+	const currentPlanets = filteredPlanets.slice(indexOfFirstPlanet, indexOfLastPlanet);
 
 	const handlePageChange = (event, value) => {
 		setCurrentPage(value);
+	};
+
+	const handleSearchChange = (event) => {
+		setSearchQuery(event.target.value);
+		setCurrentPage(1); // Reset to first page on search
 	};
 
 	return (
@@ -48,46 +58,51 @@ function PlanetView() {
 			<CssBaseline />
 			<div
 				style={{
-					backgroundSize: 'cover', // Make sure the image covers the entire container
-					backgroundPosition: 'center', // Center the image
-					backgroundRepeat: 'no-repeat', // Prevent background image from repeating
-					minHeight: '100vh', // Ensure it covers full viewport height
-					padding: '20px', // Add some padding
+					backgroundSize: 'cover',
+					backgroundPosition: 'center',
+					backgroundRepeat: 'no-repeat',
+					minHeight: '100vh',
+					padding: '20px',
+					backgroundImage: `url(${spaceBackground})`, // Adding the background image
 				}}
 			>
-				<div
+				{/* Search Bar */}
+				<TextField
+					label="Search Planets"
+					variant="outlined"
+					fullWidth
+					value={searchQuery}
+					onChange={handleSearchChange}
+					style={{ marginBottom: '-50px' }}
+				/>
+
+				<Grid
+					container
+					spacing={{ xs: 2, md: 3 }}
+					columns={{ xs: 4, sm: 8, md: 12 }}
 					style={{
-						height: '500px', // Set the height of the scrollable container
-						overflowY: 'auto', // Enable vertical scrolling
+						display: 'flex',
+						justifyContent: 'center',
+						marginTop: 20,
 					}}
 				>
-					<Grid
-						container
-						spacing={{ xs: 2, md: 3 }}
-						columns={{ xs: 4, sm: 8, md: 12 }}
-						style={{
-							display: 'flex',
-							justifyContent: 'center',
-							marginTop: 20,
-						}}
-					>
-						{currentPlanets.map(planetData => (
-							<Grid
-								item
-								xs={2}
-								sm={4}
-								md={4}
-								key={planetData.name}
-							>
-								<PlanetCard data={planetData} />
-							</Grid>
-						))}
-					</Grid>
-				</div>
+					{currentPlanets.map(planetData => (
+						<Grid
+							item
+							xs={2}
+							sm={4}
+							md={4}
+							key={planetData.name}
+						>
+							<PlanetCard data={planetData} />
+						</Grid>
+					))}
+				</Grid>
+
 				{/* Add pagination controls */}
-				{queryResult && (
+				{filteredPlanets.length > 0 && (
 					<Pagination
-						count={Math.ceil(queryResult.length / itemsPerPage)}
+						count={Math.ceil(filteredPlanets.length / itemsPerPage)}
 						page={currentPage}
 						onChange={handlePageChange}
 						color="primary"

@@ -22,6 +22,8 @@ import StarInfoCard from './StarInfoCard';
 import CloseIcon from '@mui/icons-material/Close';
 import { Euler } from 'three';
 import CameraController from './CameraController';
+import loading from '../assets/loading.gif';
+
 function StarView() {
 	const [activeStar, setActiveStar] = useState(null);
 	const [constellating, setConstellating] = useState(false);
@@ -171,7 +173,22 @@ function StarView() {
 						</ThemeProvider>
 					</div>
 				) : (
-					<h1>Loading...</h1>
+					<div
+						style={{
+							display: 'flex',
+							alignItems: 'center',
+							justifyContent: 'center',
+							height: '100vh',
+							backgroundColor: 'black',
+							position: 'absolute',
+							width: '100%',
+							top: 0,
+							left: 0,
+							zIndex: 1000,
+						}}
+					>
+						<img src={loading} alt="Loading..." />
+					</div>
 				)}
 			</div>
 		</div>

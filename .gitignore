@@ -6,12 +6,14 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
-# python venv
+
+# Python virtual environments
 myenv
 venv
 env
+env_name
 
-#python cache
+# Python cache
 __pycache__/
 *.pyc
 
