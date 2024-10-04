@@ -47,7 +47,7 @@ function Stars({ data, setActiveStar, constellating }) {
 		if (!data || data.length === 0) return [];
 
 		return data.map(starData => {
-			const coreGeometry = new THREE.SphereGeometry(0.75, 24, 24);
+			const coreGeometry = new THREE.SphereGeometry(1, 24, 24);
 			const coreMaterial = new THREE.MeshBasicMaterial({
 				color: starData.hex_color,
 			});
@@ -118,11 +118,36 @@ function Stars({ data, setActiveStar, constellating }) {
 			backgroundAudio.pause(); // Pause audio on component unmount
 		};
 	}, []);
+	useEffect(() => {
+		if (!groupRef.current || stars.length === 0) return;
 
+		let centerX = 0;
+		let centerY = 0;
+		let centerZ = 0;
+
+		stars.forEach(star => {
+			centerX += star.position.x;
+			centerY += star.position.y;
+			centerZ += star.position.z;
+		});
+
+		const starCount = stars.length;
+		centerX /= starCount;
+		centerY /= starCount;
+		centerZ /= starCount;
+
+		// Update camera position based on stars' center
+		camera.position.set(centerX + 550, centerY + 200, centerZ);
+		camera.rotation.set(
+			0.15392281267247743,
+			1.5514108922629914,
+			-0.15389434637465207,
+		);
+		// Update camera rotation if needed
+	});
 	const playClickSfx = () => {
 		new Audio('/src/assets/star-click-sfx.mp3').play();
 	};
-
 	const handleClick = event => {
 		// Convert mouse coordinates to normalized device coordinates (-1 to +1)
 		mouse.x = (event.clientX / window.innerWidth) * 2 - 1;

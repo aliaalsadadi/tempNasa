@@ -11,17 +11,17 @@ import {
 	ThemeProvider,
 	Typography,
 	IconButton,
-
 } from '@mui/material';
-import { OrbitControls, Html } from '@react-three/drei';
-import { Canvas } from '@react-three/fiber';
-import { useState, useEffect } from 'react';
+import { Html } from '@react-three/drei';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import Stars from './Stars';
 import { darkTheme } from '../constants';
 import StarInfoCard from './StarInfoCard';
 import CloseIcon from '@mui/icons-material/Close';
-
+import { Euler } from 'three';
+import CameraController from './CameraController';
 function StarView() {
 	const [activeStar, setActiveStar] = useState(null);
 	const [constellating, setConstellating] = useState(false);
@@ -79,7 +79,7 @@ function StarView() {
 	}, [ra, dec]); // Trigger fetch when ra or dec changes
 
 	// Function to handle click on a star/planet
-	const handleStarClick = (star) => {
+	const handleStarClick = star => {
 		setActiveStar(star);
 		setDialogOpen(true); // Open dialog when a star is clicked
 	};
@@ -91,52 +91,53 @@ function StarView() {
 	return (
 		<div>
 			{error && <p>Error: {error}</p>}
-
-			/* Canvas Container */
-						<div className="canvas-container" >
-							{queryResult ? (
-								<div style={{ position: 'relative' }}>
-									<div style={{background:'white', borderRadius: '5px', position: 'absolute', top: 5, left: '50%', transform: 'translateX(-50%)', zIndex: 999 }}>
-										<ButtonGroup
-											size="large"
-											aria-label="Large button group"
-											variant="contained"
-											color="secondary"
-										>
-											{buttons}
-										</ButtonGroup>
-									</div>
-									<Canvas
-										camera={{ position: [0, 0, 5] }}
-										style={{
-											background: 'black',
-											height: '100vh',
-											width: '100vw',
-										}}
-									>
-										<Html>
-											<div
-												style={{
-													position: 'absolute',
-													display: 'flex',
-													top: -350,
-													justifyContent: 'center',
-													marginTop: '20px',
-												}}
-											>
-
-											</div>
-										</Html>
-										<ambientLight intensity={0.5} />
-										<Stars
-											data={queryResult}
-											setActiveStar={handleStarClick} // Pass handleStarClick to setActiveStar
+			<div className="canvas-container">
+				{queryResult ? (
+					<div style={{ position: 'relative' }}>
+						<div
+							style={{
+								background: 'white',
+								borderRadius: '5px',
+								position: 'absolute',
+								top: 5,
+								left: '50%',
+								transform: 'translateX(-50%)',
+								zIndex: 999,
+							}}
+						>
+							<ButtonGroup
+								size="large"
+								aria-label="Large button group"
+								variant="contained"
+								color="secondary"
+							>
+								{buttons}
+							</ButtonGroup>
+						</div>
+						<Canvas
+							style={{
+								background: 'black',
+								height: '100vh',
+								width: '100vw',
+							}}
+						>
+							<CameraController />
+							<Html>
+								<div
+									style={{
+										position: 'absolute',
+										display: 'flex',
+										top: -350,
+										justifyContent: 'center',
+										marginTop: '20px',
+									}}
+								></div>
+							</Html>
+							<ambientLight intensity={0.5} />
+							<Stars
+								data={queryResult}
+								setActiveStar={handleStarClick}
 								constellating={constellating}
-							/>
-
-							<OrbitControls
-								enablePan={false}
-								enableRotate={false}
 							/>
 						</Canvas>
 
@@ -146,7 +147,6 @@ function StarView() {
 								open={dialogOpen}
 								onClose={handleCloseDialog}
 								maxWidth="md"
-
 							>
 								<IconButton
 									aria-label="close"
@@ -169,13 +169,12 @@ function StarView() {
 								</DialogContent>
 							</Dialog>
 						</ThemeProvider>
-
 					</div>
 				) : (
 					<h1>Loading...</h1>
 				)}
 			</div>
-		</div >
+		</div>
 	);
 }
 
