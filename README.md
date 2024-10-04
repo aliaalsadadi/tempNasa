@@ -15,6 +15,7 @@
     4. improve logo in public folder
     5. add constellation(connecting stars) mechanism
     6. Make Loading pages
+    7. UI is positioned absolutely so no responsivness
 # References
 https://astronomy.stackexchange.com/questions/46664/straightforward-conversion-from-gaia-gdr3-photometry-to-rgb-values
 https://www.schoolsobservatory.org/learn/astro/stars/class
