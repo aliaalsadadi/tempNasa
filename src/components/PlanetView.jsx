@@ -5,15 +5,12 @@ import { darkTheme } from '../constants';
 import PlanetCard from './PlanetCard';
 import Grid from '@mui/material/Grid';
 import spaceBackground from '../assets/betterspace.jpg'; // Import your space image
-import { useTexture } from '@react-three/drei';
-import { useLoader } from '@react-three/fiber';
 
 function PlanetView() {
-	const [queryResult, setQueryResult] = useState(null);
+	const [queryResult, setQueryResult] = useState([]);
 	const [currentPage, setCurrentPage] = useState(1);
 	const [searchQuery, setSearchQuery] = useState('');
 	const itemsPerPage = 6;
-
 
 	const fetchData = async (query) => {
 		const apiUrl = `${import.meta.env.VITE_API_URL}/getPlanets?name=${query}`;
@@ -36,11 +33,9 @@ function PlanetView() {
 		fetchData(searchQuery);
 	}, [searchQuery]);
 
-	const filteredPlanets = queryResult
-		? queryResult.filter(planet =>
-			planet.name.toLowerCase().includes(searchQuery.toLowerCase())
-		)
-		: [];
+	const filteredPlanets = queryResult.filter(planet =>
+		planet.name.toLowerCase().includes(searchQuery.toLowerCase())
+	);
 
 	const indexOfLastPlanet = currentPage * itemsPerPage;
 	const indexOfFirstPlanet = indexOfLastPlanet - itemsPerPage;
@@ -63,26 +58,62 @@ function PlanetView() {
 					backgroundSize: 'cover',
 					backgroundPosition: 'center',
 					backgroundRepeat: 'no-repeat',
-					minHeight: '100vh',
+					height: '100vh', // Set height to fill the viewport
+					overflowY: 'auto', // Enable vertical scrolling for the whole page
 					padding: '20px',
-					backgroundImage: `url(${spaceBackground})`, // Adding the background image
-					overflowY: 'auto', // Enable vertical scrolling
-					maxHeight: '80vh', // Limit height of the scrollable area
 				}}
 			>
-				{/* Search Bar */}
-				<TextField
-					label="Search Planets"
-					variant="outlined"
-					fullWidth
-					value={searchQuery}
-					onChange={handleSearchChange}
-					InputProps={{
-						style: { backgroundColor: 'black', color: 'white' }, // Set background and text color
-					}}
-					style={{ marginBottom: '20px' }} // Adjust margin if needed
-				/>
+				{/* Centered Image at the Top */}
+				<div style={{
+					margin: '0 auto',
+					maxWidth: '1000px', // Maximum width for larger screens
+					display: 'flex',
+					justifyContent: 'center',
+					alignItems: 'center',
+					padding: '20px',
+				}}>
+					<img
+						src="Skylify.png" // Replace with your image URL
+						alt="Hero"
+						style={{
+							width: '100%',
+							height: 'auto',
+							objectFit: 'cover',
+						}}
+					/>
+				</div>
 
+				{/* Centered Search Bar */}
+				<div style={{
+					display: 'flex',
+					justifyContent: 'center', // Center horizontally
+					marginBottom: '20px', // Space below the input
+				}}>
+					<TextField
+						label="Search Planets"
+						variant="outlined"
+						value={searchQuery} // Ensure value is set correctly
+						onChange={handleSearchChange} // Update state on change
+						InputProps={{
+							style: { 
+								backgroundColor: 'black', 
+								color: 'white', 
+								textAlign: 'center', // Center the text
+							},
+						}}
+						InputLabelProps={{
+							style: { 
+								color: 'white', // Color for the label
+							},
+						}}
+						style={{ 
+							width: '300px', // Set a specific width
+							borderRadius: '20px', // Make it less square
+						}}
+					/>
+				</div>
+
+				{/* Container for the planet cards */}
 				<Grid
 					container
 					spacing={{ xs: 2, md: 3 }}
@@ -90,7 +121,7 @@ function PlanetView() {
 					style={{
 						display: 'flex',
 						justifyContent: 'center',
-						marginTop: 20,
+						marginTop: -30,
 					}}
 				>
 					{currentPlanets.map(planetData => (
