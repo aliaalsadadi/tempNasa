@@ -10,35 +10,31 @@ function PlanetView() {
 	const [queryResult, setQueryResult] = useState(null);
 	const [currentPage, setCurrentPage] = useState(1);
 	const [searchQuery, setSearchQuery] = useState('');
-	const apiUrl = `${import.meta.env.VITE_API_URL}/getPlanets`;
 	const itemsPerPage = 6;
 
-	useEffect(() => {
-		const fetchData = async () => {
-			try {
-				const response = await fetch(apiUrl, {
-					method: 'GET',
-					headers: {
-						Accept: 'application/json',
-						'Content-Type': 'application/json',
-					},
-				});
-				const data = await response.json();
-				setQueryResult(data);
-			} catch (error) {
-				console.error('Error fetching data:', error);
-			}
-		};
+	const fetchData = async (query) => {
+		const apiUrl = `${import.meta.env.VITE_API_URL}/getPlanets?name=${query}`;
+		try {
+			const response = await fetch(apiUrl, {
+				method: 'GET',
+				headers: {
+					Accept: 'application/json',
+					'Content-Type': 'application/json',
+				},
+			});
+			const data = await response.json();
+			setQueryResult(data);
+		} catch (error) {
+			console.error('Error fetching data:', error);
+		}
+	};
 
-		fetchData();
-	}, []);
+	useEffect(() => {
+		fetchData(searchQuery);
+	}, [searchQuery]);
 
 	// Calculate the current planets to display based on the current page and search query
-	const filteredPlanets = queryResult
-		? queryResult.filter(planet =>
-			planet.name.toLowerCase().includes(searchQuery.toLowerCase())
-		)
-		: [];
+	const filteredPlanets = queryResult || [];
 
 	const indexOfLastPlanet = currentPage * itemsPerPage;
 	const indexOfFirstPlanet = indexOfLastPlanet - itemsPerPage;
