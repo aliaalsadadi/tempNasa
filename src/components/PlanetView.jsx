@@ -5,12 +5,15 @@ import { darkTheme } from '../constants';
 import PlanetCard from './PlanetCard';
 import Grid from '@mui/material/Grid';
 import spaceBackground from '../assets/betterspace.jpg'; // Import your space image
+import { useTexture } from '@react-three/drei';
+import { useLoader } from '@react-three/fiber';
 
 function PlanetView() {
 	const [queryResult, setQueryResult] = useState(null);
 	const [currentPage, setCurrentPage] = useState(1);
 	const [searchQuery, setSearchQuery] = useState('');
 	const itemsPerPage = 6;
+
 
 	const fetchData = async (query) => {
 		const apiUrl = `${import.meta.env.VITE_API_URL}/getPlanets?name=${query}`;
@@ -33,8 +36,11 @@ function PlanetView() {
 		fetchData(searchQuery);
 	}, [searchQuery]);
 
-	// Calculate the current planets to display based on the current page and search query
-	const filteredPlanets = queryResult || [];
+	const filteredPlanets = queryResult
+		? queryResult.filter(planet =>
+			planet.name.toLowerCase().includes(searchQuery.toLowerCase())
+		)
+		: [];
 
 	const indexOfLastPlanet = currentPage * itemsPerPage;
 	const indexOfFirstPlanet = indexOfLastPlanet - itemsPerPage;
@@ -60,20 +66,22 @@ function PlanetView() {
 					minHeight: '100vh',
 					padding: '20px',
 					backgroundImage: `url(${spaceBackground})`, // Adding the background image
+					overflowY: 'auto', // Enable vertical scrolling
+					maxHeight: '80vh', // Limit height of the scrollable area
 				}}
 			>
 				{/* Search Bar */}
 				<TextField
-	label="Search Planets"
-	variant="outlined"
-	fullWidth
-	value={searchQuery}
-	onChange={handleSearchChange}
-	InputProps={{
-		style: { backgroundColor: 'black', color: 'white' }, // Set background and text color
-	}}
-	style={{ marginBottom: '-50px' }}
-/>
+					label="Search Planets"
+					variant="outlined"
+					fullWidth
+					value={searchQuery}
+					onChange={handleSearchChange}
+					InputProps={{
+						style: { backgroundColor: 'black', color: 'white' }, // Set background and text color
+					}}
+					style={{ marginBottom: '20px' }} // Adjust margin if needed
+				/>
 
 				<Grid
 					container
