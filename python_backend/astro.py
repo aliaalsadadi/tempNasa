@@ -127,6 +127,7 @@ def get_planets(discover_method: str = None):
     # Ensure pl_masse is not null
     where_conditions.append("pl_masse is not null")
     where_conditions.append("pl_radj is not null")
+    where_conditions.append("pl_eqt is not null")
     # Combine where conditions with 'AND'
     where_query = " AND ".join(where_conditions) if where_conditions else None
     print(where_query)
@@ -134,7 +135,7 @@ def get_planets(discover_method: str = None):
     # Define the parameters for the query
     query_params = {
         "table": "pscomppars",
-        "select": "top 100 pl_name,disc_year,ra,dec,discoverymethod,pl_rade,pl_radj,pl_masse,pl_massj",
+        "select": "top 100 pl_name,disc_year,ra,dec,discoverymethod,pl_rade,pl_radj,pl_masse,pl_massj, pl_eqt",
         "cache": True,
     }
 
@@ -159,6 +160,7 @@ def get_planets(discover_method: str = None):
             "pl_radj": float(row["pl_radj"].value),
             "pl_masse": float(row["pl_masse"]),
             "pl_massj": float(row["pl_massj"]),
+            "pl_eqt": float(row["pl_eqt"].value),
         }
         for row in result
     ]
