@@ -75,7 +75,7 @@ function PlanetCard({ data }) {
 
 					{/* Right side: Planet Sphere */}
 					<Box sx={{ display: 'flex', justifyContent: 'center' }}>
-					<PlanetSphere radius={data?.pl_rade/25}/> {/* Render the 3D sphere here */}
+					<PlanetSphere radius={data?.pl_rade/21}  color={temperatureToColor(data?.pl_eqt)}/> {/* Render the 3D sphere here */}
 					</Box>
 				</Box>
 			</CardContent>
@@ -96,6 +96,41 @@ function PlanetCard({ data }) {
 			</CardActions>
 		</Card>
 	);
+}
+
+function temperatureToColor(temperatureKelvin) {
+    // Define temperature thresholds
+    const coldThreshold = 150;   // Lower threshold for cold (blue)
+    const hotThreshold = 600;    // Upper threshold for hot (red)
+
+    // Clamp the temperature to avoid extreme values
+    const clampedTemp = Math.max(coldThreshold, Math.min(temperatureKelvin, hotThreshold));
+
+    // Map temperature to color values
+    const normalizedTemp = (clampedTemp - coldThreshold) / (hotThreshold - coldThreshold);
+
+    // Calculate RGB values with more emphasis on different ranges
+    let r, g, b;
+
+    if (normalizedTemp < 0.33) {
+        // Transition from blue to green
+        r = Math.floor(255 * (normalizedTemp * 3)); // Red increases from 0 to 255
+        g = 0; // Green starts from 0
+        b = 255; // Blue stays at 255
+    } else if (normalizedTemp < 0.66) {
+        // Transition from green to yellow
+        r = 255; // Red is fully on
+        g = Math.floor(255 * ((normalizedTemp - 0.33) * 3)); // Green increases from 0 to 255
+        b = 0; // Blue decreases to 0
+    } else {
+        // Transition from yellow to red
+        r = 255; // Red stays fully on
+        g = Math.floor(255 * (1 - ((normalizedTemp - 0.66) * 3))); // Green decreases to 0
+        b = 0; // Blue stays at 0
+    }
+
+    // Convert RGB to hexadecimal
+    return (r << 16) | (g << 8) | b; // Combine RGB into a single number
 }
 
 export default PlanetCard;

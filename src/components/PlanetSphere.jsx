@@ -1,25 +1,35 @@
+import { useLoader } from '@react-three/fiber';
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
 function PlanetSphere({ radius = 1, color = 0xAA8844 }) {
 	const canvasRef = useRef(null);
-
+const colormap = useLoader(THREE.TextureLoader, "fixx.jpg");
 	useEffect(() => {
 		// Set up the scene, camera, and renderer
 		const scene = new THREE.Scene();
-		const camera = new THREE.PerspectiveCamera(46, 1, 0.1, 1000); // Aspect ratio set to 1 for square canvas
+		const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
 		const renderer = new THREE.WebGLRenderer({
 			antialias: true,
 			canvas: canvasRef.current,
 		});
-		renderer.setSize(150, 150); // Set canvas size
+		renderer.setSize(150, 150); // Set a larger canvas size
 
 		// Create a sphere geometry
-		const geometry = new THREE.SphereGeometry(radius, 32, 32); // Radius 1, 32 segments
-		const material = new THREE.MeshBasicMaterial({ color: color }); // Light blue color
+		
+		const geometry = new THREE.IcosahedronGeometry(radius, 8); // Radius 1, 32 segments
+		const material = new THREE.MeshStandardMaterial({ 
+			map : colormap , color : color, flatShading: true });
 		const sphere = new THREE.Mesh(geometry, material);
-
 		scene.add(sphere);
+
+		// Add lighting
+		const ambientLight = new THREE.AmbientLight(0x404040); // Soft white light
+		scene.add(ambientLight);
+
+		const directionalLight = new THREE.DirectionalLight(0xffffff, 1); // White light
+		directionalLight.position.set(5, 5, 5); // Position the light
+		scene.add(directionalLight);
 
 		// Position the camera
 		camera.position.z = 3;
@@ -27,11 +37,8 @@ function PlanetSphere({ radius = 1, color = 0xAA8844 }) {
 		// Animation loop
 		const animate = function () {
 			requestAnimationFrame(animate);
-
-			// Rotate the sphere for some basic animation
-			sphere.rotation.x += 0.01;
-			sphere.rotation.y += 0.01;
-
+			sphere.rotation.x += 0.01; // Optional: Rotate the sphere
+			sphere.rotation.y += 0.01; // Optional: Rotate the sphere
 			renderer.render(scene, camera);
 		};
 
@@ -43,7 +50,7 @@ function PlanetSphere({ radius = 1, color = 0xAA8844 }) {
 		};
 	}, []);
 
-	return <canvas ref={canvasRef}></canvas>;
+	return <canvas ref={canvasRef} style={{ display: 'block' }}></canvas>;
 }
 
 export default PlanetSphere;
