@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { ThemeProvider, Box } from '@mui/material';
+import { ThemeProvider, Box, Button } from '@mui/material';
 import { darkTheme } from '../constants';
 import loadingImg from '../assets/loading.gif';
 import PlanetSphere from './PlanetSphere';
 import StarBackground from './StarBackground'; // Import the StarBackground component
 
-function ExoplanetInfo() {
+import { useNavigate } from 'react-router-dom';
+function ExoplanetInfoPage() {
   const { planetName } = useParams();
   const [planet, setPlanet] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -74,54 +76,77 @@ function ExoplanetInfo() {
     ) : planet ? (
       <ThemeProvider theme={darkTheme}>
         <div className="min-h-screen bg-black flex flex-col items-center justify-center p-6">
-          <StarBackground /> {/* Render the starry background */}
+          <div className="w-full h-full min-h-screen absolute">
+            <StarBackground /> {/* Render the starry background */}
+          </div>
           <p id="planet-name" style={{ zIndex: 1 }}>{planet.pl_name}</p>
           <div className="flex justify-around items-center w-full max-w-7xl" style={{ zIndex: 1 }}>
-            <div className="bg-[#393D41] text-white max-w-md p-5 rounded-lg">
-              <h2 className="text-3xl font-bold mb-4">{planet.name}</h2>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="border-b border-gray-500 pb-2">
-                  <div className="text-sm">Discovery Year:</div>
-                  <div className="text-lg">{planet?.disc_year}</div>
+            <div className="text-white max-w-md p-5 rounded-lg">
+              <div className="bg-[#393D41] text-white max-w-md p-5 rounded-lg">
+                <h2 className="text-3xl font-bold mb-4">{planet.name}</h2>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="border-b border-gray-500 pb-2">
+                    <div className="text-sm">Discovery Year:</div>
+                    <div className="text-lg">{planet?.disc_year}</div>
+                  </div>
+                  <div className="border-b border-gray-500 pb-2">
+                    <div className="text-sm">Discovery Method:</div>
+                    <div className="text-lg">{planet?.discover_method}</div>
+                  </div>
+                  <div className="border-b border-gray-500 pb-2">
+                    <div className="text-sm">Right Ascension (RA):</div>
+                    <div className="text-lg">{planet?.ra}</div>
+                  </div>
+                  <div className="border-b border-gray-500 pb-2">
+                    <div className="text-sm">Declination (Dec):</div>
+                    <div className="text-lg">{planet?.dec}</div>
+                  </div>
+                  <div className="border-b border-gray-500 pb-2">
+                    <div className="text-sm">Radius (Earth units):</div>
+                    <div className="text-lg">{planet?.pl_rade}</div>
+                  </div>
+                  <div className="border-b border-gray-500 pb-2">
+                    <div className="text-sm">Radius (Jupiter units):</div>
+                    <div className="text-lg">{planet?.pl_radj}</div>
+                  </div>
+                  <div className="border-b border-gray-500 pb-2">
+                    <div className="text-sm">Mass (Earth units):</div>
+                    <div className="text-lg">{planet?.pl_masse}</div>
+                  </div>
+                  <div className="border-b border-gray-500 pb-2">
+                    <div className="text-sm">Mass (Jupiter units):</div>
+                    <div className="text-lg">{planet?.pl_massj}</div>
+                  </div>
+                  <div className="border-b border-gray-500 pb-2">
+                    <div className="text-sm">Equilibrium Temperature:</div>
+                    <div className="text-lg">{planet?.pl_eqt} K</div>
+                  </div>
                 </div>
-                <div className="border-b border-gray-500 pb-2">
-                  <div className="text-sm">Discovery Method:</div>
-                  <div className="text-lg">{planet?.discover_method}</div>
-                </div>
-                <div className="border-b border-gray-500 pb-2">
-                  <div className="text-sm">Right Ascension (RA):</div>
-                  <div className="text-lg">{planet?.ra}</div>
-                </div>
-                <div className="border-b border-gray-500 pb-2">
-                  <div className="text-sm">Declination (Dec):</div>
-                  <div className="text-lg">{planet?.dec}</div>
-                </div>
-                <div className="border-b border-gray-500 pb-2">
-                  <div className="text-sm">Radius (Earth units):</div>
-                  <div className="text-lg">{planet?.pl_rade}</div>
-                </div>
-                <div className="border-b border-gray-500 pb-2">
-                  <div className="text-sm">Radius (Jupiter units):</div>
-                  <div className="text-lg">{planet?.pl_radj}</div>
-                </div>
-                <div className="border-b border-gray-500 pb-2">
-                  <div className="text-sm">Mass (Earth units):</div>
-                  <div className="text-lg">{planet?.pl_masse}</div>
-                </div>
-                <div className="border-b border-gray-500 pb-2">
-                  <div className="text-sm">Mass (Jupiter units):</div>
-                  <div className="text-lg">{planet?.pl_massj}</div>
-                </div>
-                <div className="border-b border-gray-500 pb-2">
-                  <div className="text-sm">Equilibrium Temperature:</div>
-                  <div className="text-lg">{planet?.pl_eqt} K</div>
-                </div>
+
               </div>
+              <Button
+                onClick={() => navigate(`/stars/${planet.ra}/${planet.dec}`)}
+                size="small"
+                sx={{
+                  padding: '10px', // Adjust padding as needed
+                  bgcolor: 'transparent',
+                  color: 'white',
+                  border: '1px solid white',
+                  marginTop: '20px',
+                  '&:hover': {
+                    bgcolor: 'rgba(0, 0, 0, 0.1)', // Adjust hover background as needed
+                  },
+                }}
+              >
+                Visit the Night Sky
+              </Button>
             </div>
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-              <PlanetSphere radius={planet?.pl_rade / 11} color={temperatureToColor(planet?.pl_eqt)} />
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minWidth: '300px', minHeight: '300px' }}>
+              <PlanetSphere radius={1.05} color={temperatureToColor(planet?.pl_eqt)} width={250} height={250} />
             </Box>
           </div>
+
+
         </div>
       </ThemeProvider>
     ) : (
@@ -130,4 +155,4 @@ function ExoplanetInfo() {
   );
 }
 
-export default ExoplanetInfo;
+export default ExoplanetInfoPage;
