@@ -2,12 +2,12 @@ import { useTexture } from '@react-three/drei';
 import { useLoader } from '@react-three/fiber';
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
+import textureJPG from '../../public/low-mass.jpg';
 
-function PlanetSphere({ radius = 1, color = 0xAA8844, path ="low-mass.jpg"}) {
+function PlanetSphere({ radius = 1, color = 0xAA8844, path ="low-mass.jpg", width = 150, height = 150 }) {
 
-	const canvasRef = useRef(null);
-const colormap = useLoader(THREE.TextureLoader, path);
-
+const canvasRef = useRef(null);
+const colormap = useLoader(THREE.TextureLoader, textureJPG);
 	useEffect(() => {
 		// Set up the scene, camera, and renderer
 		const scene = new THREE.Scene();
@@ -16,7 +16,7 @@ const colormap = useLoader(THREE.TextureLoader, path);
 			antialias: true,
 			canvas: canvasRef.current,
 		});
-		renderer.setSize(150, 150); // Set a larger canvas size
+		renderer.setSize(width, height); // Set a larger canvas size
 
 		// Create a sphere geometry
 		
@@ -53,7 +53,7 @@ const colormap = useLoader(THREE.TextureLoader, path);
 		};
 	}, []);
 
-	return <canvas ref={canvasRef} style={{ display: 'block' }}></canvas>;
+	return <canvas  ref={canvasRef} style={{ display: 'block', zIndex:998 }}></canvas>;
 }
 
 export default PlanetSphere;

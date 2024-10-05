@@ -77,11 +77,11 @@ function PlanetCard({ data }) {
 
 					{/* Right side: Planet Sphere */}
 					<Box sx={{ display: 'flex', justifyContent: 'center' }}>
-					<PlanetSphere 
-    radius={data?.pl_rade / 21}  
-    color={temperatureToColor(data?.pl_eqt)} 
-    path ={getFilePath(categorizeStar(data?.pl_rade, data?.pl_eqt, data?.pl_masse))}
-/>					</Box>
+						<PlanetSphere
+							radius={data?.pl_rade / 21}
+							color={temperatureToColor(data?.pl_eqt)}
+							path={getFilePath(categorizeStar(data?.pl_rade, data?.pl_eqt, data?.pl_masse))}
+						/>					</Box>
 				</Box>
 			</CardContent>
 			<CardActions>
@@ -96,7 +96,21 @@ function PlanetCard({ data }) {
 						},
 					}}
 				>
-					See Sky
+					Visit the Sky
+				</Button>
+				<Button
+					onClick={() => navigate(`/exoplanet/${data.name}`)}
+					size="small"
+					sx={{
+						bgcolor: 'transparent',
+						color: 'white',
+						border: '1px solid white',
+						'&:hover': {
+							bgcolor: 'rgba(0, 0, 0, 0.1)', // Adjust hover background as needed
+						},
+					}}
+				>
+					Show details
 				</Button>
 			</CardActions>
 		</Card>
@@ -105,86 +119,86 @@ function PlanetCard({ data }) {
 
 
 function categorizeStar(radius, temperature, mass) {
-    const categories = {
-        radius: '',
-        mass: ''
-    };
+	const categories = {
+		radius: '',
+		mass: ''
+	};
 
-    // Categorize radius
-    if (radius < 5) {
-        categories.radius = 'low';
-    } else if (radius <= 10) {
-        categories.radius = 'medium';
-    } else {
-        categories.radius = 'high';
-    }
+	// Categorize radius
+	if (radius < 5) {
+		categories.radius = 'low';
+	} else if (radius <= 10) {
+		categories.radius = 'medium';
+	} else {
+		categories.radius = 'high';
+	}
 
-    // Categorize mass
-    if (mass < 100) {
-        categories.mass = 'low';
-    } else if (mass <= 500) {
-        categories.mass = 'medium';
-    } else {
-        categories.mass = 'high';
-    }
+	// Categorize mass
+	if (mass < 100) {
+		categories.mass = 'low';
+	} else if (mass <= 500) {
+		categories.mass = 'medium';
+	} else {
+		categories.mass = 'high';
+	}
 
-    return categories;
+	return categories;
 }
 
 function getFilePath(categories) {
-    let { radius, mass } = categories;
+	let { radius, mass } = categories;
 	if (radius == "high") {
-		mass ="high";
+		mass = "high";
 	}
-	
-    // Construct the file path based on categories
-    let filePath = 'texture';
 
-    // Append radius category
-    filePath += `/${radius}-radius`;
+	// Construct the file path based on categories
+	let filePath = 'texture';
 
-    // Append temperature category
+	// Append radius category
+	filePath += `/${radius}-radius`;
 
-    // Append mass category
-    filePath += `/${mass}-mass`;
-    // Return the complete file path
-    return filePath + '.jpg'; // Assuming the files are PNG images
+	// Append temperature category
+
+	// Append mass category
+	filePath += `/${mass}-mass`;
+	// Return the complete file path
+	return filePath + '.jpg'; // Assuming the files are PNG images
 }
 
 
 function temperatureToColor(temperatureKelvin) {
-    // Define temperature thresholds
-    const coldThreshold = 150;   // Lower threshold for cold (blue)
-    const hotThreshold = 600;    // Upper threshold for hot (red)
+	// Define temperature thresholds
+	const coldThreshold = 150;   // Lower threshold for cold (blue)
+	const hotThreshold = 600;    // Upper threshold for hot (red)
 
-    // Clamp the temperature to avoid extreme values
-    const clampedTemp = Math.max(coldThreshold, Math.min(temperatureKelvin, hotThreshold));
+	// Clamp the temperature to avoid extreme values
+	const clampedTemp = Math.max(coldThreshold, Math.min(temperatureKelvin, hotThreshold));
 
-    // Map temperature to color values
-    const normalizedTemp = (clampedTemp - coldThreshold) / (hotThreshold - coldThreshold);
+	// Map temperature to color values
+	const normalizedTemp = (clampedTemp - coldThreshold) / (hotThreshold - coldThreshold);
 
-    // Calculate RGB values with more emphasis on different ranges
-    let r, g, b;
+	// Calculate RGB values with more emphasis on different ranges
+	let r, g, b;
 
-    if (normalizedTemp < 0.33) {
-        // Transition from blue to green
-        r = Math.floor(255 * (normalizedTemp * 3)); // Red increases from 0 to 255
-        g = 0; // Green starts from 0
-        b = 255; // Blue stays at 255
-    } else if (normalizedTemp < 0.66) {
-        // Transition from green to yellow
-        r = 255; // Red is fully on
-        g = Math.floor(255 * ((normalizedTemp - 0.33) * 3)); // Green increases from 0 to 255
-        b = 0; // Blue decreases to 0
-    } else {
-        // Transition from yellow to red
-        r = 255; // Red stays fully on
-        g = Math.floor(255 * (1 - ((normalizedTemp - 0.66) * 3))); // Green decreases to 0
-        b = 0; // Blue stays at 0
-    }
+	if (normalizedTemp < 0.33) {
+		// Transition from blue to green
+		r = Math.floor(255 * (normalizedTemp * 3)); // Red increases from 0 to 255
+		g = 0; // Green starts from 0
+		b = 255; // Blue stays at 255
+	} else if (normalizedTemp < 0.66) {
+		// Transition from green to yellow
+		r = 255; // Red is fully on
+		g = Math.floor(255 * ((normalizedTemp - 0.33) * 3)); // Green increases from 0 to 255
+		b = 0; // Blue decreases to 0
+	} else {
+		// Transition from yellow to red
+		r = 255; // Red stays fully on
+		g = Math.floor(255 * (1 - ((normalizedTemp - 0.66) * 3))); // Green decreases to 0
+		b = 0; // Blue stays at 0
+	}
 
-    // Convert RGB to hexadecimal
-    return (r << 16) | (g << 8) | b; // Combine RGB into a single number
+	// Convert RGB to hexadecimal
+	return (r << 16) | (g << 8) | b; // Combine RGB into a single number
 }
 
 export default PlanetCard;
