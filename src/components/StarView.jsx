@@ -23,7 +23,6 @@ import CloseIcon from '@mui/icons-material/Close';
 import { Euler } from 'three';
 import CameraController from './CameraController';
 import loading from '../assets/loading.gif';
-import { useScreenshot } from 'use-react-screenshot';
 
 function StarView() {
 	const screenRef = useRef(null);
