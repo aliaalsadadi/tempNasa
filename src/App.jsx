@@ -9,7 +9,7 @@ import StarView from './components/StarView';
 import PlanetView from './components/PlanetView';
 import ExoplanetInfoPage from './components/ExoplanetInfoPage';
 import AnimatedCursor from 'react-animated-cursor';
-
+import ChatBot from './components/ChatBot';
 function App() {
 	return (
 		<div className="App">
@@ -21,6 +21,7 @@ function App() {
 					<Route path="/" element={<PlanetView />} />
 				</Routes>
 			</Router>
+			<ChatBot></ChatBot>
 		</div>
 	);
 }
