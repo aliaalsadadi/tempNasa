@@ -75,7 +75,7 @@ function PlanetCard({ data }) {
 
 					{/* Right side: Planet Sphere */}
 					<Box sx={{ display: 'flex', justifyContent: 'center' }}>
-						<PlanetSphere /> {/* Render the 3D sphere here */}
+					<PlanetSphere radius={data?.pl_rade/25}/> {/* Render the 3D sphere here */}
 					</Box>
 				</Box>
 			</CardContent>
