@@ -4,7 +4,9 @@ import astropy.units as u
 from fastapi import FastAPI
 from pydantic import BaseModel
 from astro import get_planets, get_stars as query_stars  # Renaming imported function
+from astro import getPlanetByQuery
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi import Query
 
 app = FastAPI()
 
@@ -34,6 +36,11 @@ async def handle_get_stars(query: StarQuery):
 
 
 @app.get("/getPlanets")
-async def handle_get_planets():
-    result = get_planets()
+async def handle_get_planets(name: str = Query(None)):
+    if not name:
+        result = get_planets()
+    else:
+        result = getPlanetByQuery(name=name)
     return result
+
+
