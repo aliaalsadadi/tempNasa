@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from 'react';
 import { Euler, Vector3 } from 'three';
 import { OrbitControls } from '@react-three/drei';
 
-function CameraController() {
+function CameraController({ constellating }) {
 	const { camera, gl } = useThree();
 	const controlsRef = useRef();
 	const initialPosition = new Vector3(550, 200, 0);
@@ -27,15 +27,15 @@ function CameraController() {
 
 	// Keep the rotation constant while allowing panning and zooming
 	useFrame(() => {
-		if (controlsRef.current) {
+		if (controlsRef.current && !constellating) {
 			const controls = controlsRef.current;
 
 			// Check if position has changed
 			if (!camera.position.equals(initialPosition)) {
 				// console.log('Camera position changed:', {
-				// 	x: camera.position.x,
-				// 	y: camera.position.y,
-				// 	z: camera.position.z,
+				//   x: camera.position.x,
+				//   y: camera.position.y,
+				//   z: camera.position.z,
 				// });
 			}
 
@@ -45,13 +45,19 @@ function CameraController() {
 		}
 	});
 
+	useEffect(() => {
+		if (controlsRef.current) {
+			controlsRef.current.enabled = !constellating;
+		}
+	}, [constellating]);
+
 	return (
 		<OrbitControls
 			ref={controlsRef}
 			args={[camera, gl.domElement]}
 			enableRotate={false} // Disabling rotation
-			enablePan={true} // Allow panning
-			enableZoom={true} // Allow zooming
+			enablePan={!constellating} // Allow panning only when not constellating
+			enableZoom={!constellating} // Allow zooming only when not constellating
 			zoomSpeed={2}
 		/>
 	);
