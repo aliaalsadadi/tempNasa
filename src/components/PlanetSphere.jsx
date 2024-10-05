@@ -1,10 +1,12 @@
+import { useTexture } from '@react-three/drei';
 import { useLoader } from '@react-three/fiber';
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
-function PlanetSphere({ radius = 1, color = 0xAA8844 }) {
+function PlanetSphere({ radius = 1, color = 0xAA8844, path ="low-mass.jpg"}) {
 	const canvasRef = useRef(null);
-const colormap = useLoader(THREE.TextureLoader, "fixx.jpg");
+const colormap = useLoader(THREE.TextureLoader, path);
+
 	useEffect(() => {
 		// Set up the scene, camera, and renderer
 		const scene = new THREE.Scene();
