@@ -30,12 +30,16 @@ function StarView() {
 	const [queryResult, setQueryResult] = useState(null);
 	const [error, setError] = useState(null);
 	const [dialogOpen, setDialogOpen] = useState(false); // State to control dialog visibility
-
+	const childRef = useRef(null);
 	const buttons = [
 		<Button
 			key="one"
 			disabled={!constellating}
-			onClick={() => setConstellating(false)}
+			onClick={() => {
+				// Clear the lines state
+				childRef.current.deleteLines();
+				setConstellating(false);
+			}}
 		>
 			Cancel
 		</Button>,
@@ -82,14 +86,16 @@ function StarView() {
 
 	// Function to handle click on a star/planet
 	const handleStarClick = star => {
-		setActiveStar(star);
-		setDialogOpen(true); // Open dialog when a star is clicked
+		if (!constellating) {
+			// Only allow clicks when not constellating
+			setActiveStar(star);
+			setDialogOpen(true); // Open dialog when a star is clicked
+		}
 	};
 
 	const handleCloseDialog = () => {
 		setDialogOpen(false); // Close dialog when needed
 	};
-
 	return (
 		<div>
 			{error && <p>Error: {error}</p>}
@@ -123,44 +129,48 @@ function StarView() {
 								width: '100vw',
 							}}
 						>
-							<CameraController />
-							
+							<CameraController constellating={constellating} />
 							<ambientLight intensity={0.5} />
 							<Stars
 								data={queryResult}
-								setActiveStar={handleStarClick}
+								setActiveStar={handleStarClick} // Update function here
 								constellating={constellating}
+								ref={childRef}
 							/>
 						</Canvas>
 
-						{/* Dialog for StarInfoCard */}
-						<ThemeProvider theme={darkTheme}>
-							<Dialog
-								open={dialogOpen}
-								onClose={handleCloseDialog}
-								maxWidth="md"
-							>
-								<IconButton
-									aria-label="close"
-									onClick={handleCloseDialog}
-									style={{
-										position: 'absolute',
-										right: 8,
-										top: 8,
-										color: '#fff',
-									}}
+						{/* Conditionally render Dialog for StarInfoCard only when not constellating */}
+						{!constellating && (
+							<ThemeProvider theme={darkTheme}>
+								<Dialog
+									open={dialogOpen}
+									onClose={handleCloseDialog}
+									maxWidth="md"
 								>
-									<CloseIcon />
-								</IconButton>
-								<DialogTitle>Star Details</DialogTitle>
-								<DialogContent>
-									<CssBaseline />
-									{activeStar && (
-										<StarInfoCard activeStar={activeStar} />
-									)}
-								</DialogContent>
-							</Dialog>
-						</ThemeProvider>
+									<IconButton
+										aria-label="close"
+										onClick={handleCloseDialog}
+										style={{
+											position: 'absolute',
+											right: 8,
+											top: 8,
+											color: '#fff',
+										}}
+									>
+										<CloseIcon />
+									</IconButton>
+									<DialogTitle>Star Details</DialogTitle>
+									<DialogContent>
+										<CssBaseline />
+										{activeStar && (
+											<StarInfoCard
+												activeStar={activeStar}
+											/>
+										)}
+									</DialogContent>
+								</Dialog>
+							</ThemeProvider>
+						)}
 					</div>
 				) : (
 					<div
