@@ -139,29 +139,28 @@ const Stars = forwardRef(({ data, setActiveStar, constellating }, ref) => {
 		};
 	}, []);
 
-	useEffect(() => {
-		if (!groupRef.current || stars.length === 0) return;
+	// useEffect(() => {
+	// 	if (!groupRef.current || stars.length === 0) return;
 
-		let centerX = 0;
-		let centerY = 0;
-		let centerZ = 0;
+	// 	let centerX = 0;
+	// 	let centerY = 0;
+	// 	let centerZ = 0;
 
-		stars.forEach(star => {
-			centerX += star.position.x;
-			centerY += star.position.y;
-			centerZ += star.position.z;
-		});
+	// 	stars.forEach(star => {
+	// 		centerX += star.position.x;
+	// 		centerY += star.position.y;
+	// 		centerZ += star.position.z;
+	// 	});
 
-		const starCount = stars.length;
-		centerX /= starCount;
-		centerY /= starCount;
-		centerZ /= starCount;
+	// 	const starCount = stars.length;
+	// 	centerX /= starCount;
+	// 	centerY /= starCount;
+	// 	centerZ /= starCount;
 
-		// Update camera position based on stars' center
-		camera.position.set(centerX + 500, centerY + 200, centerZ);
-		camera.lookAt(centerX, centerY, centerZ);
-		// Update camera rotation if needed
-	}, []);
+	// 	// Update camera position based on stars' center
+	// 	camera.lookAt(centerX, centerY, centerZ);
+	// 	// Update camera rotation if needed
+	// }, []);
 
 	const playClickSfx = () => {
 		new Audio('/src/assets/star-click-sfx.mp3').play();
