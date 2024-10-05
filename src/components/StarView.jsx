@@ -23,19 +23,35 @@ import CloseIcon from '@mui/icons-material/Close';
 import { Euler } from 'three';
 import CameraController from './CameraController';
 import loading from '../assets/loading.gif';
+import { useScreenshot } from 'use-react-screenshot';
 
 function StarView() {
+	const screenRef = useRef(null);
+	const canvasRef = useRef(null); // Ref for Canvas
+	const getImage = async () => {
+		// Capture the screenshot of the WebGL canvas
+		const canvas = document.querySelector('canvas');
+		console.log(canvas);
+		console.log('Screenshot with stars:', canvas.toDataURL('image/png')); // Log the screenshot
+
+		// Return the image
+		return canvas.toDataURL('image/png');
+	};
 	const [activeStar, setActiveStar] = useState(null);
 	const [constellating, setConstellating] = useState(false);
 	const [queryResult, setQueryResult] = useState(null);
 	const [error, setError] = useState(null);
 	const [dialogOpen, setDialogOpen] = useState(false); // State to control dialog visibility
-
+	const childRef = useRef(null);
 	const buttons = [
 		<Button
 			key="one"
 			disabled={!constellating}
-			onClick={() => setConstellating(false)}
+			onClick={() => {
+				// Clear the lines state
+				childRef.current.deleteLines();
+				setConstellating(false);
+			}}
 		>
 			Cancel
 		</Button>,
@@ -48,10 +64,24 @@ function StarView() {
 		>
 			Constellate
 		</Button>,
-		<Button key="three" disabled={!constellating}>
-			Publish
+		<Button
+			key="three"
+			disabled={!constellating}
+			onClick={async () => {
+				const img = canvasRef.current.toDataURL('image/png'); // Capture the image
+				const link = document.createElement('a');
+				link.href = img;
+				link.download = 'stars.png'; // Set the download filename
+				document.body.appendChild(link);
+				link.click();
+				document.body.removeChild(link);
+				setConstellating(false);
+			}}
+		>
+			Download
 		</Button>,
 	];
+
 	const { ra, dec } = useParams(); // Get ra and dec from URL params
 
 	useEffect(() => {
@@ -82,18 +112,20 @@ function StarView() {
 
 	// Function to handle click on a star/planet
 	const handleStarClick = star => {
-		setActiveStar(star);
-		setDialogOpen(true); // Open dialog when a star is clicked
+		if (!constellating) {
+			// Only allow clicks when not constellating
+			setActiveStar(star);
+			setDialogOpen(true); // Open dialog when a star is clicked
+		}
 	};
 
 	const handleCloseDialog = () => {
 		setDialogOpen(false); // Close dialog when needed
 	};
-
 	return (
 		<div>
 			{error && <p>Error: {error}</p>}
-			<div className="canvas-container">
+			<div ref={screenRef} className="canvas-container">
 				{queryResult ? (
 					<div style={{ position: 'relative' }}>
 						<div
@@ -117,60 +149,66 @@ function StarView() {
 							</ButtonGroup>
 						</div>
 						<Canvas
+							ref={canvasRef}
 							style={{
 								background: 'black',
 								height: '100vh',
 								width: '100vw',
 							}}
+							gl={{ preserveDrawingBuffer: true }}
+							camera={{
+								position: [
+									-721.88397014864, 72.82023321025686,
+									356.86871261626015,
+								],
+								rotation: [
+									-2.000452096625266, -1.3362104891742985,
+									-2.0110641671611633,
+								],
+							}}
 						>
-							<CameraController />
-							<Html>
-								<div
-									style={{
-										position: 'absolute',
-										display: 'flex',
-										top: -350,
-										justifyContent: 'center',
-										marginTop: '20px',
-									}}
-								></div>
-							</Html>
+							<CameraController constellating={constellating} />
 							<ambientLight intensity={0.5} />
 							<Stars
 								data={queryResult}
-								setActiveStar={handleStarClick}
+								setActiveStar={handleStarClick} // Update function here
 								constellating={constellating}
+								ref={childRef}
 							/>
 						</Canvas>
 
-						{/* Dialog for StarInfoCard */}
-						<ThemeProvider theme={darkTheme}>
-							<Dialog
-								open={dialogOpen}
-								onClose={handleCloseDialog}
-								maxWidth="md"
-							>
-								<IconButton
-									aria-label="close"
-									onClick={handleCloseDialog}
-									style={{
-										position: 'absolute',
-										right: 8,
-										top: 8,
-										color: '#fff',
-									}}
+						{/* Conditionally render Dialog for StarInfoCard only when not constellating */}
+						{!constellating && (
+							<ThemeProvider theme={darkTheme}>
+								<Dialog
+									open={dialogOpen}
+									onClose={handleCloseDialog}
+									maxWidth="md"
 								>
-									<CloseIcon />
-								</IconButton>
-								<DialogTitle>Star Details</DialogTitle>
-								<DialogContent>
-									<CssBaseline />
-									{activeStar && (
-										<StarInfoCard activeStar={activeStar} />
-									)}
-								</DialogContent>
-							</Dialog>
-						</ThemeProvider>
+									<IconButton
+										aria-label="close"
+										onClick={handleCloseDialog}
+										style={{
+											position: 'absolute',
+											right: 8,
+											top: 8,
+											color: '#fff',
+										}}
+									>
+										<CloseIcon />
+									</IconButton>
+									<DialogTitle>Star Details</DialogTitle>
+									<DialogContent>
+										<CssBaseline />
+										{activeStar && (
+											<StarInfoCard
+												activeStar={activeStar}
+											/>
+										)}
+									</DialogContent>
+								</Dialog>
+							</ThemeProvider>
+						)}
 					</div>
 				) : (
 					<div

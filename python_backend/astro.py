@@ -5,6 +5,7 @@ from astropy.coordinates import SkyCoord
 import astropy.units as u
 import numpy as np
 import requests
+import math
 
 
 Gaia.ROW_LIMIT = 20000
@@ -165,3 +166,53 @@ def get_planets(discover_method: str = None):
     ]
     print()
     return result
+
+
+def getPlanetByQuery(name: str):
+    print(name)
+    
+    # Initialize the where clause with the name condition
+    where_clause = []
+    where_clause.append(f"pl_name like '{name}'")
+    # where_clause.append("pl_rade is not null")
+    # where_clause.append("pl_radj is not null")
+    # where_clause.append("pl_eqt is not null")
+    where_query = " AND ".join(where_clause) if where_clause else None
+    query_params = {
+        "table": "pscomppars",
+        "select": "top 10 pl_name,disc_year,ra,dec,discoverymethod,pl_rade,pl_radj,pl_masse,pl_massj,pl_eqt",
+        "cache": True,
+        "where": where_query,
+    }
+    
+     
+
+    result = NasaExoplanetArchive.query_criteria(**query_params)
+    result = [
+        {
+            "name": row["pl_name"],
+            "ra": float(row["ra"].value),
+            "dec": float(row["dec"].value),
+            "disc_year": int(row["disc_year"]),
+            "discover_method": row["discoverymethod"],
+            "pl_rade": float(row["pl_rade"].value),
+            "pl_radj": float(row["pl_radj"].value),
+            "pl_masse": float(row["pl_masse"]),
+            "pl_massj": float(row["pl_massj"]),
+            "pl_eqt": float(row["pl_eqt"].value),
+        }
+        for row in result
+    ]
+    
+    # Filter out None or NaN values
+    filtered_result = [
+    {
+        k: (
+            "no information" if v is None or (isinstance(v, float) and math.isnan(v)) else v
+        )
+        for k, v in planet.items()
+    }
+    for planet in result
+    ]
+    print(filtered_result)
+    return filtered_result

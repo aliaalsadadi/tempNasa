@@ -1,56 +1,55 @@
 import { useThree, useFrame } from '@react-three/fiber';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Euler, Vector3 } from 'three';
 import { OrbitControls } from '@react-three/drei';
 
-function CameraController() {
+function CameraController({ constellating }) {
 	const { camera, gl } = useThree();
 	const controlsRef = useRef();
-	const lastPosition = useRef(new Vector3(550, 200, 0));
-	const lastRotation = useRef(
-		new Euler(
-			0.15392281267247743,
-			1.5514108922629914,
-			-0.15389434637465207,
-		),
+	const initialPosition = new Vector3(
+		-721.88397014864,
+		72.82023321025686,
+		356.86871261626015,
 	);
+	const initialRotation = new Euler(
+		-2.000452096625266,
+		-1.3362104891742985,
+		-2.0110641671611633,
+	);
+
 	useFrame(() => {
 		if (controlsRef.current) {
 			const controls = controlsRef.current;
 
-			// Check if position has changed
-			if (!camera.position.equals(lastPosition.current)) {
-				console.log('Camera position changed:', {
-					x: camera.position.x,
-					y: camera.position.y,
-					z: camera.position.z,
-				});
-				lastPosition.current.copy(camera.position);
-			}
+			// Reset camera rotation to the initial values
+			camera.rotation.copy(initialRotation);
 
-			// Check if rotation has changed
-			if (!camera.rotation.equals(lastRotation.current)) {
-				console.log('Camera rotation changed:', {
-					x: camera.rotation.x,
-					y: camera.rotation.y,
-					z: camera.rotation.z,
-				});
-				lastRotation.current.copy(camera.rotation);
-			}
-
-			controls.update();
+			// Optional: Log camera position and rotation
+			// console.log('Camera position:', camera.position);
+			// console.log('Camera rotation:', camera.rotation);
 		}
 	});
 
+	useEffect(() => {
+		if (controlsRef.current) {
+			controlsRef.current.enabled = !constellating;
+		}
+	}, [constellating]);
+
 	return (
-		<OrbitControls
-			ref={controlsRef}
-			enableRotate={false}
-			enablePan={true}
-			enableZoom={true}
-			zoomSpeed={1}
-		/>
+		<>
+			<OrbitControls
+				ref={controlsRef}
+				args={[camera, gl.domElement]}
+				enableRotate={false} // Disabling rotation
+				enablePan={!constellating} // Allow panning only when not constellating
+				enableZoom={!constellating} // Allow zooming only when not constellating
+				zoomSpeed={1}
+			/>
+		</>
 	);
 }
 
 export default CameraController;
+// Camera position changed: {x: -721.88397014864, y: 72.82023321025686, z: 356.86871261626015}
+// CameraController.jsx:40 Camera rotation changed: {x: -2.000452096625266, y: -1.3362104891742985, z: -2.0110641671611633}

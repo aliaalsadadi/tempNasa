@@ -22,12 +22,14 @@
     "@react-three/fiber": "^8.17.7",
     "@types/three": "^0.168.0",
     "dotenv": "^16.4.5",
+    "html2canvas": "^1.4.1",
     "react": "^18.3.1",
     "react-animated-cursor": "^2.11.2",
     "react-dom": "^18.3.1",
     "react-grid-layout": "^1.4.4",
     "react-router-dom": "^6.26.2",
-    "three": "^0.168.0"
+    "three": "^0.168.0",
+    "use-react-screenshot": "^4.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",

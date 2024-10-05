@@ -1,13 +1,29 @@
-import { useEffect, useRef, useMemo } from 'react';
+import {
+	useEffect,
+	useRef,
+	useMemo,
+	useState,
+	forwardRef,
+	useImperativeHandle,
+} from 'react';
 import * as THREE from 'three';
 import { useFrame, useThree } from '@react-three/fiber';
 import { Star } from '@mui/icons-material';
+import React from 'react';
 
-function Stars({ data, setActiveStar, constellating }) {
+const Stars = forwardRef(({ data, setActiveStar, constellating }, ref) => {
 	const groupRef = useRef();
 	const raycaster = new THREE.Raycaster();
 	const mouse = new THREE.Vector2();
-	const { camera } = useThree();
+	const [lines, setLines] = useState([]);
+
+	const { camera, scene } = useThree();
+	useImperativeHandle(ref, () => ({
+		deleteLines,
+	}));
+
+	// State to track the stars clicked for constellating
+	const [selectedStars, setSelectedStars] = useState([]);
 
 	// Custom shader for the glowing effect
 	const glowMaterial = useMemo(() => {
@@ -72,7 +88,7 @@ function Stars({ data, setActiveStar, constellating }) {
 				distanceScalingFactor;
 			const z = distance * Math.sin(decInRadians) * distanceScalingFactor;
 
-			//store star information for use in starInfo card
+			// Store star information for use in starInfo card
 			starGroup.userData = {
 				designation: starData.designation,
 				id: starData.source_id,
@@ -81,6 +97,7 @@ function Stars({ data, setActiveStar, constellating }) {
 				distance: starData.distance,
 				parallax: starData.parallax,
 				temp: starData.temp,
+				position: new THREE.Vector3(x, y, z), // Add position for later use
 			};
 			starGroup.position.set(x, y, z);
 			starGroup.add(coreStar);
@@ -93,9 +110,9 @@ function Stars({ data, setActiveStar, constellating }) {
 	// Add stars to the group
 	useEffect(() => {
 		if (groupRef?.current) {
-			groupRef.current.clear();
+			groupRef.current?.clear();
 			stars.forEach(star => {
-				groupRef.current.add(star);
+				groupRef?.current?.add(star);
 			});
 		}
 	}, [stars]);
@@ -103,51 +120,72 @@ function Stars({ data, setActiveStar, constellating }) {
 	// Play background audio on component mount
 	useEffect(() => {
 		const backgroundAudio = new Audio('/src/assets/engine-humming-sfx.mp3');
-		backgroundAudio.loop = true; // Set to loop if desired
-		const handleClick = () => {
+		backgroundAudio.loop = true;
+
+		const playAudio = () => {
 			backgroundAudio.play().catch(error => {
 				console.error('Audio play failed:', error);
 			});
+			// Remove the event listener after first interaction
+			document.removeEventListener('click', playAudio);
 		};
 
-		// Adding an event listener for user interaction
-		window.addEventListener('click', handleClick);
+		// Add event listener for user interaction
+		document.addEventListener('click', playAudio);
 
 		return () => {
-			window.removeEventListener('click', handleClick);
-			backgroundAudio.pause(); // Pause audio on component unmount
+			backgroundAudio.pause();
+			document.removeEventListener('click', playAudio);
 		};
 	}, []);
-	useEffect(() => {
-		if (!groupRef.current || stars.length === 0) return;
 
-		let centerX = 0;
-		let centerY = 0;
-		let centerZ = 0;
+	// useEffect(() => {
+	// 	if (!groupRef.current || stars.length === 0) return;
 
-		stars.forEach(star => {
-			centerX += star.position.x;
-			centerY += star.position.y;
-			centerZ += star.position.z;
-		});
+	// 	let centerX = 0;
+	// 	let centerY = 0;
+	// 	let centerZ = 0;
 
-		const starCount = stars.length;
-		centerX /= starCount;
-		centerY /= starCount;
-		centerZ /= starCount;
+	// 	stars.forEach(star => {
+	// 		centerX += star.position.x;
+	// 		centerY += star.position.y;
+	// 		centerZ += star.position.z;
+	// 	});
 
-		// Update camera position based on stars' center
-		camera.position.set(centerX + 550, centerY + 200, centerZ);
-		camera.rotation.set(
-			0.15392281267247743,
-			1.5514108922629914,
-			-0.15389434637465207,
-		);
-		// Update camera rotation if needed
-	});
+	// 	const starCount = stars.length;
+	// 	centerX /= starCount;
+	// 	centerY /= starCount;
+	// 	centerZ /= starCount;
+
+	// 	// Update camera position based on stars' center
+	// 	camera.lookAt(centerX, centerY, centerZ);
+	// 	// Update camera rotation if needed
+	// }, []);
+
 	const playClickSfx = () => {
 		new Audio('/src/assets/star-click-sfx.mp3').play();
 	};
+	const deleteLines = () => {
+		lines.forEach(line => {
+			scene.remove(line);
+		});
+		setLines([]);
+	};
+	const drawLineBetweenStars = (star1, star2) => {
+		const geometry = new THREE.BufferGeometry().setFromPoints([
+			star1.position,
+			star2.position,
+		]);
+		const material = new THREE.LineBasicMaterial({ color: 0xffffff });
+		const line = new THREE.Line(geometry, material);
+
+		// Add the line to the scene
+		scene.add(line);
+
+		// Store the line for later deletion
+		setLines(prevLines => [...prevLines, line]);
+	};
+
 	const handleClick = event => {
 		// Convert mouse coordinates to normalized device coordinates (-1 to +1)
 		mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
@@ -157,16 +195,34 @@ function Stars({ data, setActiveStar, constellating }) {
 		raycaster.setFromCamera(mouse, camera);
 		// Calculate objects intersecting the picking ray
 		const intersects = raycaster.intersectObjects(
-			groupRef.current.children,
+			groupRef?.current?.children,
 		);
 
 		if (intersects.length > 0) {
 			const clickedStar = intersects[0].object.parent; // Access the parent group
-			console.log('Clicked star ID:', clickedStar);
-			setActiveStar(clickedStar?.userData);
-			playClickSfx();
-			// Here you can handle what happens when a star is clicked
-			// For example, display more information about the star
+			const starData = clickedStar.userData;
+
+			if (!constellating) {
+				// If not constellating, show star information
+				setActiveStar(starData);
+				playClickSfx();
+			} else {
+				// If constellating, track the clicked stars and draw a line
+				setSelectedStars(prevStars => {
+					if (prevStars.length === 0) {
+						// First star clicked
+						return [clickedStar];
+					} else if (prevStars.length === 1) {
+						// Second star clicked, draw a line
+						const secondStar = clickedStar;
+						drawLineBetweenStars(prevStars[0], secondStar);
+
+						// Reset the selected stars
+						return [];
+					}
+					return prevStars;
+				});
+			}
 		}
 	};
 
@@ -176,7 +232,7 @@ function Stars({ data, setActiveStar, constellating }) {
 		return () => {
 			window.removeEventListener('click', handleClick);
 		};
-	}, []);
+	}, [constellating]);
 
 	// Update view vector in animation loop
 	useFrame(({ camera }) => {
@@ -191,6 +247,6 @@ function Stars({ data, setActiveStar, constellating }) {
 	});
 
 	return <group ref={groupRef} />;
-}
-
+});
+Stars.displayName = 'Stars';
 export default Stars;

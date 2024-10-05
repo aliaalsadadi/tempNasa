@@ -4,6 +4,7 @@ import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
 function PlanetSphere({ radius = 1, color = 0xAA8844, path ="low-mass.jpg"}) {
+
 	const canvasRef = useRef(null);
 const colormap = useLoader(THREE.TextureLoader, path);
 
