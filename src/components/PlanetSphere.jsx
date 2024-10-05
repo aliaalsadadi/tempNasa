@@ -1,10 +1,10 @@
 import { useLoader } from '@react-three/fiber';
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
-
+import fixJPG from '../../public/fixx.jpg';
 function PlanetSphere({ radius = 1, color = 0xaa8844 }) {
 	const canvasRef = useRef(null);
-const colormap = useLoader(THREE.TextureLoader, "fixx.jpg");
+const colormap = useLoader(THREE.TextureLoader, fixJPG);
 	useEffect(() => {
 		// Set up the scene, camera, and renderer
 		const scene = new THREE.Scene();
@@ -50,7 +50,7 @@ const colormap = useLoader(THREE.TextureLoader, "fixx.jpg");
 		};
 	}, []);
 
-	return <canvas ref={canvasRef} style={{ display: 'block' }}></canvas>;
+	return <canvas  ref={canvasRef} style={{ display: 'block', zIndex:998 }}></canvas>;
 }
 
 export default PlanetSphere;
