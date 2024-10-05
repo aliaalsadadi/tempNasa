@@ -1,40 +1,39 @@
 import { ThemeProvider } from '@emotion/react';
-import { CssBaseline, Pagination, TextField } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { CssBaseline, Pagination, TextField, Button } from '@mui/material';
+import { useEffect, useState, useRef } from 'react';
 import { darkTheme } from '../constants';
 import PlanetCard from './PlanetCard';
 import Grid from '@mui/material/Grid';
 import spaceBackground from '../assets/betterspace.jpg'; // Import your space image
-import { useTexture } from '@react-three/drei';
-import { useLoader } from '@react-three/fiber';
 
 function PlanetView() {
 	const [queryResult, setQueryResult] = useState(null);
 	const [currentPage, setCurrentPage] = useState(1);
 	const [searchQuery, setSearchQuery] = useState('');
+	const apiUrl = `${import.meta.env.VITE_API_URL}/getPlanets`;
 	const itemsPerPage = 6;
 
-
-	const fetchData = async (query) => {
-		const apiUrl = `${import.meta.env.VITE_API_URL}/getPlanets?name=${query}`;
-		try {
-			const response = await fetch(apiUrl, {
-				method: 'GET',
-				headers: {
-					Accept: 'application/json',
-					'Content-Type': 'application/json',
-				},
-			});
-			const data = await response.json();
-			setQueryResult(data);
-		} catch (error) {
-			console.error('Error fetching data:', error);
-		}
-	};
+	const planetCardsRef = useRef(null); // Reference for scrolling
 
 	useEffect(() => {
-		fetchData(searchQuery);
-	}, [searchQuery]);
+		const fetchData = async () => {
+			try {
+				const response = await fetch(apiUrl, {
+					method: 'GET',
+					headers: {
+						Accept: 'application/json',
+						'Content-Type': 'application/json',
+					},
+				});
+				const data = await response.json();
+				setQueryResult(data);
+			} catch (error) {
+				console.error('Error fetching data:', error);
+			}
+		};
+
+		fetchData();
+	}, []);
 
 	const filteredPlanets = queryResult
 		? queryResult.filter(planet =>
@@ -55,6 +54,12 @@ function PlanetView() {
 		setCurrentPage(1); // Reset to first page on search
 	};
 
+	const scrollToPlanets = () => {
+		if (planetCardsRef.current) {
+			planetCardsRef.current.scrollIntoView({ behavior: 'smooth' });
+		}
+	};
+
 	return (
 		<ThemeProvider theme={darkTheme}>
 			<CssBaseline />
@@ -63,34 +68,107 @@ function PlanetView() {
 					backgroundSize: 'cover',
 					backgroundPosition: 'center',
 					backgroundRepeat: 'no-repeat',
-					minHeight: '100vh',
+					height: '100vh', // Set height to fill the viewport
+					overflowY: 'auto', // Enable vertical scrolling for the whole page
 					padding: '20px',
-					backgroundImage: `url(${spaceBackground})`, // Adding the background image
-					overflowY: 'auto', // Enable vertical scrolling
-					maxHeight: '80vh', // Limit height of the scrollable area
 				}}
 			>
-				{/* Search Bar */}
-				<TextField
-					label="Search Planets"
-					variant="outlined"
-					fullWidth
-					value={searchQuery}
-					onChange={handleSearchChange}
-					InputProps={{
-						style: { backgroundColor: 'black', color: 'white' }, // Set background and text color
-					}}
-					style={{ marginBottom: '20px' }} // Adjust margin if needed
-				/>
+				{/* Centered Image at the Top */}
+				<div style={{
+					margin: '0 auto',
+					maxWidth: '1000px', // Maximum width for larger screens
+					display: 'flex',
+					justifyContent: 'center',
+					alignItems: 'center',
+					padding: '20px',
+				}}>
+					<img
+						src="Skylify.png" // Replace with your image URL
+						alt="Hero"
+						style={{
+							width: '100%',
+							height: 'auto',
+							objectFit: 'cover',
+						}}
+					/>
+				</div>
+				<div style={{
+					display: 'flex',
+					justifyContent: 'center',
+					marginBottom: '20px',
+				}}>
+					<Button 
+			variant="outlined" 
+			style={{
+				color: 'white', // Text color
+				backgroundColor: 'black', // Button background color
+				border: '2px solid lightgray', // Light white border
+				borderRadius: '20px',
+				'&:hover': {
+					backgroundColor: 'black', // Maintain background on hover
+					border: '2px solid white', // Change border color on hover
+				},
+			}} 
+			onClick={scrollToPlanets}
+		>
+			Explore Planets
+		</Button>
+				</div>
+				{/* Description Paragraph */}
+				<div style={{
+					color: 'white',
+					marginBottom: '20px',
+					fontSize: '18px',
+					maxWidth: '800px',
+					margin: '0 auto',
+					textAlign: 'center',
 
+				}}>
+					At Skylify, we invite you to embark on an extraordinary journey through the cosmos, where the mysteries of exoplanets unfold before your eyes. Our platform serves as your gateway to the vast universe, providing detailed insights into distant worlds beyond our solar system. Discover the unique characteristics of these celestial bodies, from their atmospheric compositions to their potential for hosting life. But that's not all—Skylify offers a mesmerizing visual experience that allows you to gaze at the stars from the surface of your selected planets, bringing you a step closer to the awe-inspiring beauty of the universe. As university students passionate about astronomy and exploration, we aim to ignite your curiosity and inspire a deeper understanding of the cosmos. Join us in unraveling the wonders of space and exploring the infinite possibilities that lie beyond our planet.
+				</div>
+				<br />
+				<div style={{
+					display: 'flex',
+					justifyContent: 'center', // Center horizontally
+					marginBottom: '20px', // Space below the input
+				}}>
+					<TextField
+						label="Search Planets"
+						variant="outlined"
+						value={searchQuery} // Ensure value is set correctly
+						onChange={handleSearchChange} // Update state on change
+						InputProps={{
+							style: { 
+								backgroundColor: 'black', 
+								color: 'white', 
+								textAlign: 'center', // Center the text
+								borderColor: 'transparent',
+							},
+						}}
+						InputLabelProps={{
+							style: { 
+								color: 'white', // Color for the label
+							},
+						}}
+						style={{ 
+							width: '300px', // Set a specific width
+							borderRadius: '20px', // Make it less square
+							
+						}}
+					/>
+				</div>
+				{/* Explore Planets Button */}
+
+				{/* Container for the planet cards */}
 				<Grid
 					container
 					spacing={{ xs: 2, md: 3 }}
 					columns={{ xs: 4, sm: 8, md: 12 }}
+					ref={planetCardsRef} // Attach the reference here
 					style={{
 						display: 'flex',
 						justifyContent: 'center',
-						marginTop: 20,
+						marginTop: -30,
 					}}
 				>
 					{currentPlanets.map(planetData => (
@@ -112,7 +190,7 @@ function PlanetView() {
 						count={Math.ceil(filteredPlanets.length / itemsPerPage)}
 						page={currentPage}
 						onChange={handlePageChange}
-						color="primary"
+						color="grey"
 						style={{
 							marginTop: '20px',
 							display: 'flex',

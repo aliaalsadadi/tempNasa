@@ -80,7 +80,7 @@ function PlanetCard({ data }) {
 						<PlanetSphere
 							radius={data?.pl_rade / 21}
 							color={temperatureToColor(data?.pl_eqt)}
-							path={getFilePath(categorizeStar(data?.pl_rade, data?.pl_eqt, data?.pl_masse))}
+							path={"high-mass.jpg"}
 						/>					</Box>
 				</Box>
 			</CardContent>
@@ -89,10 +89,11 @@ function PlanetCard({ data }) {
 					onClick={() => navigate(`/stars/${data.ra}/${data.dec}`)}
 					size="small"
 					sx={{
-						bgcolor: '#007bff',
+						bgcolor: 'transparent',
 						color: 'white',
+						border: '1px solid white',
 						'&:hover': {
-							bgcolor: '#0056b3',
+							bgcolor: 'grey',
 						},
 					}}
 				>
@@ -106,11 +107,11 @@ function PlanetCard({ data }) {
 						color: 'white',
 						border: '1px solid white',
 						'&:hover': {
-							bgcolor: 'rgba(0, 0, 0, 0.1)', // Adjust hover background as needed
+							bgcolor: 'grey', // Adjust hover background as needed
 						},
 					}}
 				>
-					Visit the Night Sky
+					Visit Planet
 				</Button>
 			</CardActions>
 		</Card>
@@ -118,52 +119,52 @@ function PlanetCard({ data }) {
 }
 
 
-function categorizeStar(radius, temperature, mass) {
-	const categories = {
-		radius: '',
-		mass: ''
-	};
+// function categorizeStar(radius, temperature, mass) {
+// 	const categories = {
+// 		radius: '',
+// 		mass: ''
+// 	};
 
-	// Categorize radius
-	if (radius < 5) {
-		categories.radius = 'low';
-	} else if (radius <= 10) {
-		categories.radius = 'medium';
-	} else {
-		categories.radius = 'high';
-	}
+// 	// Categorize radius
+// 	if (radius < 5) {
+// 		categories.radius = 'low';
+// 	} else if (radius <= 10) {
+// 		categories.radius = 'medium';
+// 	} else {
+// 		categories.radius = 'high';
+// 	}
 
-	// Categorize mass
-	if (mass < 100) {
-		categories.mass = 'low';
-	} else if (mass <= 500) {
-		categories.mass = 'medium';
-	} else {
-		categories.mass = 'high';
-	}
+// 	// Categorize mass
+// 	if (mass < 100) {
+// 		categories.mass = 'low';
+// 	} else if (mass <= 500) {
+// 		categories.mass = 'medium';
+// 	} else {
+// 		categories.mass = 'high';
+// 	}
 
-	return categories;
-}
+// 	return categories;
+// }
 
-function getFilePath(categories) {
-	let { radius, mass } = categories;
-	if (radius == "high") {
-		mass = "high";
-	}
+// function getFilePath(categories) {
+// 	let { radius, mass } = categories;
+// 	if (radius == "high") {
+// 		mass = "high";
+// 	}
 
-	// Construct the file path based on categories
-	let filePath = 'texture';
+// 	// Construct the file path based on categories
+// 	let filePath = 'texture';
 
-	// Append radius category
-	filePath += `/${radius}-radius`;
+// 	// Append radius category
+// 	filePath += `/${radius}-radius`;
 
-	// Append temperature category
+// 	// Append temperature category
 
-	// Append mass category
-	filePath += `/${mass}-mass`;
-	// Return the complete file path
-	return filePath + '.jpg'; // Assuming the files are PNG images
-}
+// 	// Append mass category
+// 	filePath += `/${mass}-mass`;
+// 	// Return the complete file path
+// 	return filePath + '.jpg'; // Assuming the files are PNG images
+// }
 
 
 function temperatureToColor(temperatureKelvin) {
