@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
-function PlanetSphere({ radius = 1, color = 0xAA8844 }) {
+function PlanetSphere({ radius = 1, color = 0xaa8844 }) {
 	const canvasRef = useRef(null);
 
 	useEffect(() => {

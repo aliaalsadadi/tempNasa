@@ -104,11 +104,9 @@ function Stars({ data, setActiveStar, constellating }) {
 	useEffect(() => {
 		const backgroundAudio = new Audio('/src/assets/engine-humming-sfx.mp3');
 		backgroundAudio.loop = true; // Set to loop if desired
-		const handleClick = () => {
-			backgroundAudio.play().catch(error => {
-				console.error('Audio play failed:', error);
-			});
-		};
+		backgroundAudio.play().catch(error => {
+			console.error('Audio play failed:', error);
+		});
 
 		// Adding an event listener for user interaction
 		window.addEventListener('click', handleClick);
@@ -137,12 +135,8 @@ function Stars({ data, setActiveStar, constellating }) {
 		centerZ /= starCount;
 
 		// Update camera position based on stars' center
-		camera.position.set(centerX + 550, centerY + 200, centerZ);
-		camera.rotation.set(
-			0.15392281267247743,
-			1.5514108922629914,
-			-0.15389434637465207,
-		);
+		camera.position.set(centerX + 500, centerY + 200, centerZ);
+		camera.lookAt(centerX, centerY, centerZ);
 		// Update camera rotation if needed
 	}, []);
 	const playClickSfx = () => {
@@ -156,7 +150,9 @@ function Stars({ data, setActiveStar, constellating }) {
 		// Update the raycaster with the camera and mouse position
 		raycaster.setFromCamera(mouse, camera);
 		// Calculate objects intersecting the picking ray
-		const intersects = raycaster.intersectObjects(groupRef?.current?.children);
+		const intersects = raycaster.intersectObjects(
+			groupRef?.current?.children,
+		);
 
 		if (intersects.length > 0) {
 			const clickedStar = intersects[0].object.parent; // Access the parent group
@@ -166,8 +162,7 @@ function Stars({ data, setActiveStar, constellating }) {
 			// Here you can handle what happens when a star is clicked
 			// For example, display more information about the star
 		}
-		raycaster.setFromCamera(mouse, camera);
-
+		// raycaster.setFromCamera(mouse, camera);
 	};
 
 	// Add event listener for clicks
