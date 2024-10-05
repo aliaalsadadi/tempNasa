@@ -103,17 +103,22 @@ function Stars({ data, setActiveStar, constellating }) {
 	// Play background audio on component mount
 	useEffect(() => {
 		const backgroundAudio = new Audio('/src/assets/engine-humming-sfx.mp3');
-		backgroundAudio.loop = true; // Set to loop if desired
-		backgroundAudio.play().catch(error => {
-			console.error('Audio play failed:', error);
-		});
+		backgroundAudio.loop = true;
 
-		// Adding an event listener for user interaction
-		window.addEventListener('click', handleClick);
+		const playAudio = () => {
+			backgroundAudio.play().catch(error => {
+				console.error('Audio play failed:', error);
+			});
+			// Remove the event listener after first interaction
+			document.removeEventListener('click', playAudio);
+		};
+
+		// Add event listener for user interaction
+		document.addEventListener('click', playAudio);
 
 		return () => {
-			window.removeEventListener('click', handleClick);
-			backgroundAudio.pause(); // Pause audio on component unmount
+			backgroundAudio.pause();
+			document.removeEventListener('click', playAudio);
 		};
 	}, []);
 	useEffect(() => {
