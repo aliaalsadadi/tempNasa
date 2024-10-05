@@ -145,8 +145,7 @@ def get_planets(discover_method: str = None):
 
     # Perform the query
     result = NasaExoplanetArchive.query_criteria(**query_params)
-    print(result)
-
+    print(result[0]["pl_eqt"])
     # Process the result
     # PlanetData
     result = [
@@ -164,6 +163,5 @@ def get_planets(discover_method: str = None):
         }
         for row in result
     ]
-
-    print(result)
+    print()
     return result

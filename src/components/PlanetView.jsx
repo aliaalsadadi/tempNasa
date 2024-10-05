@@ -68,13 +68,16 @@ function PlanetView() {
 			>
 				{/* Search Bar */}
 				<TextField
-					label="Search Planets"
-					variant="outlined"
-					fullWidth
-					value={searchQuery}
-					onChange={handleSearchChange}
-					style={{ marginBottom: '-50px' }}
-				/>
+	label="Search Planets"
+	variant="outlined"
+	fullWidth
+	value={searchQuery}
+	onChange={handleSearchChange}
+	InputProps={{
+		style: { backgroundColor: 'black', color: 'white' }, // Set background and text color
+	}}
+	style={{ marginBottom: '-50px' }}
+/>
 
 				<Grid
 					container
