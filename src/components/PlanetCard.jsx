@@ -97,7 +97,7 @@ function PlanetCard({ data }) {
 						},
 					}}
 				>
-					See Sky
+					Visit the Sky
 				</Button>
 				<Button
 					onClick={() => navigate(`/exoplanet/${data.name}`)}

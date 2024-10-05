@@ -11,8 +11,10 @@ import {
 	ThemeProvider,
 	Typography,
 	IconButton,
+	FormControlLabel,
+	Checkbox,
 } from '@mui/material';
-import { Html } from '@react-three/drei';
+import { Grid, Html } from '@react-three/drei';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
@@ -20,9 +22,10 @@ import Stars from './Stars';
 import { darkTheme } from '../constants';
 import StarInfoCard from './StarInfoCard';
 import CloseIcon from '@mui/icons-material/Close';
-import { Euler } from 'three';
+import { Euler, GridHelper, PlaneGeometry } from 'three';
 import CameraController from './CameraController';
 import loading from '../assets/loading.gif';
+import { color } from 'three/webgpu';
 
 function StarView() {
 	const screenRef = useRef(null);
@@ -41,6 +44,7 @@ function StarView() {
 	const [queryResult, setQueryResult] = useState(null);
 	const [error, setError] = useState(null);
 	const [dialogOpen, setDialogOpen] = useState(false); // State to control dialog visibility
+	const [gridFlag, setgridFlag] = useState(false);
 	const childRef = useRef(null);
 	const buttons = [
 		<Button
@@ -82,7 +86,7 @@ function StarView() {
 	];
 
 	const { ra, dec } = useParams(); // Get ra and dec from URL params
-
+	// Adjust the GridHelper size dynamically
 	useEffect(() => {
 		const fetchData = async () => {
 			fetch(`${import.meta.env.VITE_API_URL}/getStars`, {
@@ -145,6 +149,18 @@ function StarView() {
 								color="secondary"
 							>
 								{buttons}
+								<FormControlLabel
+									control={
+										<Checkbox
+											checked={gridFlag} // Boolean flag controlling checked state
+											onChange={(event, checked) =>
+												setgridFlag(checked)
+											} // Handle checkbox toggle
+											color="primary"
+										/>
+									}
+									label="Equatorial Grid" // Label for the checkbox
+								/>
 							</ButtonGroup>
 						</div>
 						<Canvas
@@ -165,9 +181,21 @@ function StarView() {
 									-2.0110641671611633,
 								],
 							}}
+							orthographic={true}
 						>
 							<CameraController constellating={constellating} />
 							<ambientLight intensity={0.5} />
+							{gridFlag && (
+								<gridHelper
+									position={[0, 0, 0]}
+									rotation={[
+										Math.PI + 1,
+										Math.PI / 4,
+										Math.PI / 2,
+									]}
+									args={[5000, 100]}
+								/>
+							)}
 							<Stars
 								data={queryResult}
 								setActiveStar={handleStarClick} // Update function here

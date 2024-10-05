@@ -30,11 +30,11 @@ function CameraController({ constellating }) {
 		}
 	});
 
-	useEffect(() => {
-		if (controlsRef.current) {
-			controlsRef.current.enabled = !constellating;
-		}
-	}, [constellating]);
+	// useEffect(() => {
+	// 	if (controlsRef.current) {
+	// 		controlsRef.current.enabled = !constellating;
+	// 	}
+	// }, [constellating]);
 
 	return (
 		<>
@@ -43,7 +43,7 @@ function CameraController({ constellating }) {
 				args={[camera, gl.domElement]}
 				enableRotate={false} // Disabling rotation
 				enablePan={!constellating} // Allow panning only when not constellating
-				enableZoom={!constellating} // Allow zooming only when not constellating
+				enableZoom={true} // Allow zooming only when not constellating
 				zoomSpeed={1}
 			/>
 		</>
