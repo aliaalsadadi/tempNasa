@@ -10,7 +10,9 @@ function StarBackground() {
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    mountRef.current.appendChild(renderer.domElement);
+    if (mountRef.current) {
+      mountRef.current.appendChild(renderer.domElement);
+    }
 
     const starGeometry = new THREE.BufferGeometry();
     const starVertices = [];
@@ -64,11 +66,12 @@ function StarBackground() {
 
     // Clean up on unmount
     return () => {
-      mountRef.current.removeChild(renderer.domElement);
+      if (mountRef.current) {
+        mountRef.current.removeChild(renderer.domElement);
+      }
     };
   }, []);
 
-  return <div ref={mountRef} className="rounded-container" />;
-}
+  return <div ref={mountRef} className="rounded-container" style={{ width: '100%', height: '100%', minWidth: '100%' }} />}
 
 export default StarBackground;
