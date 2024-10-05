@@ -10,6 +10,8 @@ import {
 import { useNavigate } from 'react-router-dom';
 import PlanetSphere from './PlanetSphere'; // Import the PlanetSphere component
 import { Star } from '@mui/icons-material'; // Example icon import
+import { useLoader } from '@react-three/fiber';
+import { TextureLoader } from 'three';
 
 function PlanetCard({ data }) {
 	const navigate = useNavigate();
@@ -75,8 +77,11 @@ function PlanetCard({ data }) {
 
 					{/* Right side: Planet Sphere */}
 					<Box sx={{ display: 'flex', justifyContent: 'center' }}>
-					<PlanetSphere radius={data?.pl_rade/21}  color={temperatureToColor(data?.pl_eqt)}/> {/* Render the 3D sphere here */}
-					</Box>
+					<PlanetSphere 
+    radius={data?.pl_rade / 21}  
+    color={temperatureToColor(data?.pl_eqt)} 
+    path ={getFilePath(categorizeStar(data?.pl_rade, data?.pl_eqt, data?.pl_masse))}
+/>					</Box>
 				</Box>
 			</CardContent>
 			<CardActions>
@@ -97,6 +102,55 @@ function PlanetCard({ data }) {
 		</Card>
 	);
 }
+
+
+function categorizeStar(radius, temperature, mass) {
+    const categories = {
+        radius: '',
+        mass: ''
+    };
+
+    // Categorize radius
+    if (radius < 5) {
+        categories.radius = 'low';
+    } else if (radius <= 10) {
+        categories.radius = 'medium';
+    } else {
+        categories.radius = 'high';
+    }
+
+    // Categorize mass
+    if (mass < 100) {
+        categories.mass = 'low';
+    } else if (mass <= 500) {
+        categories.mass = 'medium';
+    } else {
+        categories.mass = 'high';
+    }
+
+    return categories;
+}
+
+function getFilePath(categories) {
+    let { radius, mass } = categories;
+	if (radius == "high") {
+		mass ="high";
+	}
+	
+    // Construct the file path based on categories
+    let filePath = 'texture';
+
+    // Append radius category
+    filePath += `/${radius}-radius`;
+
+    // Append temperature category
+
+    // Append mass category
+    filePath += `/${mass}-mass`;
+    // Return the complete file path
+    return filePath + '.jpg'; // Assuming the files are PNG images
+}
+
 
 function temperatureToColor(temperatureKelvin) {
     // Define temperature thresholds
