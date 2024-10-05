@@ -8,6 +8,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'; // Im
 import StarView from './components/StarView';
 import PlanetView from './components/PlanetView';
 import ExoplanetInfoPage from './components/ExoplanetInfoPage';
+import MorePlanetView from './components/MorePlanets';
 import AnimatedCursor from 'react-animated-cursor';
 import ChatBot from './components/ChatBot';
 function App() {
@@ -19,6 +20,7 @@ function App() {
 					<Route path="/stars/:ra/:dec" element={<StarView />} />
 					<Route path="/exoplanet/:planetName/" element={<ExoplanetInfoPage />} />
 					<Route path="/" element={<PlanetView />} />
+					<Route path="/more-planets" element={<MorePlanetView />} />
 				</Routes>
 			</Router>
 			<ChatBot></ChatBot>
