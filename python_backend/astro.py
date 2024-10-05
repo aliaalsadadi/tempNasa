@@ -168,9 +168,10 @@ def get_planets(discover_method: str = None):
     return result
 
 
-def getPlanetByQuery(name: str):
-    print(name)
-    
+def getPlanetByQuery(name: str, detailed: bool = False):
+    print("name2: ", name)
+    print("detailed2: ", name)
+
     # Initialize the where clause with the name condition
     where_clause = []
     where_clause.append(f"pl_name like '{name}'")
@@ -179,31 +180,57 @@ def getPlanetByQuery(name: str):
     # where_clause.append("pl_eqt is not null")
     where_query = " AND ".join(where_clause) if where_clause else None
     query_params = {
+            "table": "pscomppars",
+            "select": "top 10 pl_name,disc_year,ra,dec,discoverymethod,pl_rade,pl_radj,pl_masse,pl_massj,pl_eqt",
+            "cache": True,
+            "where": where_query,
+    }
+    if (detailed):
+        query_params = {
         "table": "pscomppars",
-        "select": "top 10 pl_name,disc_year,ra,dec,discoverymethod,pl_rade,pl_radj,pl_masse,pl_massj,pl_eqt",
+        "select": "top 10 pl_name,disc_year,ra,dec,discoverymethod,pl_rade,pl_radj,pl_masse,pl_massj,pl_eqt,pl_orbper,pl_rvamp,pl_dens,pl_angsep",
         "cache": True,
         "where": where_query,
-    }
-    
+        }       
      
 
     result = NasaExoplanetArchive.query_criteria(**query_params)
-    result = [
-        {
-            "name": row["pl_name"],
-            "ra": float(row["ra"].value),
-            "dec": float(row["dec"].value),
-            "disc_year": int(row["disc_year"]),
-            "discover_method": row["discoverymethod"],
-            "pl_rade": float(row["pl_rade"].value),
-            "pl_radj": float(row["pl_radj"].value),
-            "pl_masse": float(row["pl_masse"]),
-            "pl_massj": float(row["pl_massj"]),
-            "pl_eqt": float(row["pl_eqt"].value),
-        }
-        for row in result
-    ]
-    
+    if detailed:
+        result = [
+            {
+                "name": row["pl_name"],
+                "ra": float(row["ra"].value),
+                "dec": float(row["dec"].value),
+                "disc_year": int(row["disc_year"]),
+                "discover_method": row["discoverymethod"],
+                "pl_rade": float(row["pl_rade"].value),
+                "pl_radj": float(row["pl_radj"].value),
+                "pl_masse": float(row["pl_masse"]),
+                "pl_massj": float(row["pl_massj"]),
+                "pl_eqt": float(row["pl_eqt"].value),
+                "pl_orbper": float(row["pl_orbper"].value),
+                "pl_rvamp": float(row["pl_rvamp"].value),
+                "pl_dens": float(row["pl_dens"].value),
+                "pl_angsep": float(row["pl_angsep"].value),
+            }
+            for row in result
+        ]
+    else:
+         result = [
+            {
+                "name": row["pl_name"],
+                "ra": float(row["ra"].value),
+                "dec": float(row["dec"].value),
+                "disc_year": int(row["disc_year"]),
+                "discover_method": row["discoverymethod"],
+                "pl_rade": float(row["pl_rade"].value),
+                "pl_radj": float(row["pl_radj"].value),
+                "pl_masse": float(row["pl_masse"]),
+                "pl_massj": float(row["pl_massj"]),
+                "pl_eqt": float(row["pl_eqt"].value)
+            }
+            for row in result
+        ]
     # Filter out None or NaN values
     filtered_result = [
     {

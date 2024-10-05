@@ -7,6 +7,7 @@ import '@fontsource/roboto/700.css';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'; // Import Router and Route components
 import StarView from './components/StarView';
 import PlanetView from './components/PlanetView';
+import ExoplanetInfoPage from './components/ExoplanetInfoPage';
 import AnimatedCursor from 'react-animated-cursor';
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
 			<Router>
 				<Routes>
 					<Route path="/stars/:ra/:dec" element={<StarView />} />
+					<Route path="/exoplanet/:planetName/" element={<ExoplanetInfoPage />} />
 					<Route path="/" element={<PlanetView />} />
 				</Routes>
 			</Router>
