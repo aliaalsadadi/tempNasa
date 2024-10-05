@@ -124,17 +124,7 @@ function StarView() {
 							}}
 						>
 							<CameraController />
-							<Html>
-								<div
-									style={{
-										position: 'absolute',
-										display: 'flex',
-										top: -350,
-										justifyContent: 'center',
-										marginTop: '20px',
-									}}
-								></div>
-							</Html>
+							
 							<ambientLight intensity={0.5} />
 							<Stars
 								data={queryResult}

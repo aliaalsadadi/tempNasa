@@ -93,9 +93,9 @@ function Stars({ data, setActiveStar, constellating }) {
 	// Add stars to the group
 	useEffect(() => {
 		if (groupRef?.current) {
-			groupRef.current.clear();
+			groupRef.current?.clear();
 			stars.forEach(star => {
-				groupRef.current.add(star);
+				groupRef?.current?.add(star);
 			});
 		}
 	}, [stars]);
@@ -144,7 +144,7 @@ function Stars({ data, setActiveStar, constellating }) {
 			-0.15389434637465207,
 		);
 		// Update camera rotation if needed
-	});
+	}, []);
 	const playClickSfx = () => {
 		new Audio('/src/assets/star-click-sfx.mp3').play();
 	};
@@ -156,9 +156,7 @@ function Stars({ data, setActiveStar, constellating }) {
 		// Update the raycaster with the camera and mouse position
 		raycaster.setFromCamera(mouse, camera);
 		// Calculate objects intersecting the picking ray
-		const intersects = raycaster.intersectObjects(
-			groupRef.current.children,
-		);
+		const intersects = raycaster.intersectObjects(groupRef?.current?.children);
 
 		if (intersects.length > 0) {
 			const clickedStar = intersects[0].object.parent; // Access the parent group
@@ -168,6 +166,8 @@ function Stars({ data, setActiveStar, constellating }) {
 			// Here you can handle what happens when a star is clicked
 			// For example, display more information about the star
 		}
+		raycaster.setFromCamera(mouse, camera);
+
 	};
 
 	// Add event listener for clicks
