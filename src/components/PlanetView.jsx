@@ -105,7 +105,7 @@ function PlanetView() {
 				border: '2px solid lightgray', // Light white border
 				borderRadius: '20px',
 				'&:hover': {
-					backgroundColor: 'black', // Maintain background on hover
+					backgroundColor: 'grey', // Maintain background on hover
 					border: '2px solid white', // Change border color on hover
 				},
 			}} 
@@ -124,8 +124,7 @@ function PlanetView() {
 					textAlign: 'center',
 
 				}}>
-					At Skylify, we invite you to embark on an extraordinary journey through the cosmos, where the mysteries of exoplanets unfold before your eyes. Our platform serves as your gateway to the vast universe, providing detailed insights into distant worlds beyond our solar system. Discover the unique characteristics of these celestial bodies, from their atmospheric compositions to their potential for hosting life. But that's not all—Skylify offers a mesmerizing visual experience that allows you to gaze at the stars from the surface of your selected planets, bringing you a step closer to the awe-inspiring beauty of the universe. As university students passionate about astronomy and exploration, we aim to ignite your curiosity and inspire a deeper understanding of the cosmos. Join us in unraveling the wonders of space and exploring the infinite possibilities that lie beyond our planet.
-				</div>
+At Skylify, embark on a journey through the cosmos and explore the mysteries of exoplanets. Our platform provides insights into distant worlds, revealing their unique characteristics and potential for hosting life. Experience the beauty of the universe as you gaze at the stars from the surface of selected planets. As passionate university students, we aim to ignite your curiosity and deepen your understanding of the cosmos. Join us in exploring the wonders of space and the infinite possibilities beyond our planet.				</div>
 				<br />
 				<div style={{
 					display: 'flex',
