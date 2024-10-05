@@ -96,7 +96,7 @@ function PlanetCard({ data }) {
 						},
 					}}
 				>
-					See Sky
+					Visit the Sky
 				</Button>
 				<Button
 					onClick={() => navigate(`/exoplanet/${data.name}`)}
@@ -110,7 +110,7 @@ function PlanetCard({ data }) {
 						},
 					}}
 				>
-					Visit the Night Sky
+					Show details
 				</Button>
 			</CardActions>
 		</Card>
