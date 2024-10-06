@@ -4,9 +4,8 @@ import { useEffect, useState, useRef } from 'react';
 import { darkTheme } from '../constants';
 import PlanetCard from './PlanetCard';
 import Grid from '@mui/material/Grid';
-import spaceBackground from '../assets/betterspace.jpg'; // Import your space image
 import { useNavigate, useParams } from 'react-router-dom';
-
+import StarBackground from './StarBackground';
 function MorePlanetView() {
 	const navigate = useNavigate();
 
@@ -66,6 +65,9 @@ function MorePlanetView() {
 
 	return (
 		<ThemeProvider theme={darkTheme}>
+			<div className="w-full h-full min-h-screen absolute z-[-1]">
+				<StarBackground /> {/* Render the starry background */}
+			</div>
 			<CssBaseline />
 			<div
 				style={{
