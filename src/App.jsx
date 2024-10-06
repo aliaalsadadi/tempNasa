@@ -15,30 +15,30 @@ import { useEffect } from 'react';
 
 function App() {
 	const playClickSfx = () => {
-		new Audio('/src/assets/star-click-sfx.mp3').play();
+		new Audio('star-click-sfx.mp3').play();
 	};
 
 	useEffect(() => {
-		const backgroundAudio = new Audio('/src/assets/engine-humming-sfx.mp3');
+		const backgroundAudio = new Audio('engine-humming-sfx.mp3');
 		backgroundAudio.loop = true;
 
 		const playBackgroundAudio = () => {
 			backgroundAudio.play().catch(error => {
 				console.error('Audio play failed:', error);
 			});
-			// Remove the event listener after first interaction
-			document.removeEventListener('mousemove', playBackgroundAudio);
+			// Remove the event listener after the first interaction
+			document.removeEventListener('click', playBackgroundAudio);
 		};
 
-		// Add event listener for user interaction via mouse move for background sound
-		document.addEventListener('mousemove', playBackgroundAudio);
+		// Add event listener for explicit user interaction via a click to play background sound
+		document.addEventListener('click', playBackgroundAudio);
 
-		// Add event listener for click sound effect
+		// Add event listener for the click sound effect
 		document.addEventListener('click', playClickSfx);
 
 		return () => {
 			backgroundAudio.pause();
-			document.removeEventListener('mousemove', playBackgroundAudio);
+			document.removeEventListener('click', playBackgroundAudio);
 			document.removeEventListener('click', playClickSfx);
 		};
 	}, []);
