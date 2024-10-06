@@ -1,59 +1,80 @@
-import { useTexture } from '@react-three/drei';
 import { useLoader } from '@react-three/fiber';
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import textureJPG from '../../public/high-mass.jpg';
 
-function PlanetSphere({ radius = 1, color = 0xAA8844, path ="low-mass.jpg", width=150, height=150}) {
+function PlanetSphere({ radius = 1, color = 0xAA8844, path = "low-mass.jpg", width = 150, height = 150 }) {
+  const canvasRef = useRef(null);
+  const colormap = useLoader(THREE.TextureLoader, textureJPG);
 
-const canvasRef = useRef(null);
-const colormap = useLoader(THREE.TextureLoader, textureJPG);
-	useEffect(() => {
-		// Set up the scene, camera, and renderer
-		const scene = new THREE.Scene();
-		const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
-		const renderer = new THREE.WebGLRenderer({
-			antialias: true,
-			canvas: canvasRef.current,
-		});
-		renderer.setSize(width, height); // Set a larger canvas size
+  useEffect(() => {
+    // Set up the scene, camera, and renderer
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({
+      antialias: true,
+      canvas: canvasRef.current,
+    });
+    renderer.setSize(width, height);
+    renderer.shadowMap.enabled = true; // Enable shadow mapping
 
-		// Create a sphere geometry
-		
-		const geometry = new THREE.IcosahedronGeometry(radius, 8); // Radius 1, 32 segments
-		const material = new THREE.MeshStandardMaterial({ 
-			map : colormap , color : color, flatShading: true });
-		const sphere = new THREE.Mesh(geometry, material);
-		scene.add(sphere);
+    // Create a sphere geometry
+    const geometry = new THREE.IcosahedronGeometry(radius, 8);
+    const material = new THREE.MeshStandardMaterial({
+      map: colormap,
+      color: color,
+      flatShading: true,
+    });
+    const sphere = new THREE.Mesh(geometry, material);
+    sphere.castShadow = true; // Sphere casts shadow
+    scene.add(sphere);
 
-		// Add lighting
-		const ambientLight = new THREE.AmbientLight(0x404040); // Soft white light
-		scene.add(ambientLight);
+    // Create a ground plane to receive the shadow
+    const planeGeometry = new THREE.PlaneGeometry(50, 50);
+    const planeMaterial = new THREE.ShadowMaterial({
+      opacity: 0.5, // Semi-transparent shadow
+    });
+    const plane = new THREE.Mesh(planeGeometry, planeMaterial);
+    plane.rotation.x = -Math.PI / 2; // Rotate plane to lie flat
+    plane.position.y = -radius - 0.5; // Position plane below the sphere
+    plane.receiveShadow = true; // Plane receives shadows
+    scene.add(plane);
 
-		const directionalLight = new THREE.DirectionalLight(0xffffff, 1); // White light
-		directionalLight.position.set(5, 5, 5); // Position the light
-		scene.add(directionalLight);
+    // Add lighting
+    const ambientLight = new THREE.AmbientLight(0x404040);
+    scene.add(ambientLight);
 
-		// Position the camera
-		camera.position.z = 3;
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+    directionalLight.position.set(5, 5, 5);
+    directionalLight.castShadow = true; // Light casts shadows
+    scene.add(directionalLight);
 
-		// Animation loop
-		const animate = function () {
-			requestAnimationFrame(animate);
-			sphere.rotation.x += 0.01; // Optional: Rotate the sphere
-			sphere.rotation.y += 0.01; // Optional: Rotate the sphere
-			renderer.render(scene, camera);
-		};
+    // Shadow properties for the light
+    directionalLight.shadow.mapSize.width = 1024; // Shadow quality
+    directionalLight.shadow.mapSize.height = 1024;
+    directionalLight.shadow.camera.near = 0.5;
+    directionalLight.shadow.camera.far = 50;
 
-		animate();
+    // Position the camera
+    camera.position.z = 3;
 
-		// Clean up on unmount
-		return () => {
-			renderer.dispose();
-		};
-	}, []);
+    // Animation loop
+    const animate = function () {
+      requestAnimationFrame(animate);
+      sphere.rotation.x += 0.01;
+      sphere.rotation.y += 0.01;
+      renderer.render(scene, camera);
+    };
 
-	return <canvas  ref={canvasRef} style={{ display: 'block', zIndex:998 }}></canvas>;
+    animate();
+
+    // Clean up on unmount
+    return () => {
+      renderer.dispose();
+    };
+  }, [colormap, radius, color, width, height]);
+
+  return <canvas ref={canvasRef} style={{ display: 'block', zIndex: 998 }}></canvas>;
 }
 
 export default PlanetSphere;

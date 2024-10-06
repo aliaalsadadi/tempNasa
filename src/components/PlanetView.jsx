@@ -6,7 +6,7 @@ import PlanetCard from './PlanetCard';
 import Grid from '@mui/material/Grid';
 import spaceBackground from '../assets/betterspace.jpg'; // Import your space image
 import { useNavigate } from 'react-router-dom';
-
+import StarBackground from './StarBackground'; // Import the StarBackground component
 function PlanetView() {
 	const navigate = useNavigate();
 
@@ -41,8 +41,8 @@ function PlanetView() {
 
 	const filteredPlanets = queryResult
 		? queryResult.filter(planet =>
-				planet.name.toLowerCase().includes(searchQuery.toLowerCase()),
-		  )
+			planet.name.toLowerCase().includes(searchQuery.toLowerCase()),
+		)
 		: [];
 
 	const indexOfLastPlanet = currentPage * itemsPerPage;
@@ -73,7 +73,10 @@ function PlanetView() {
 	return (
 		<ThemeProvider theme={darkTheme}>
 			<CssBaseline />
-			<div
+			<div className="w-full h-full min-h-screen absolute z-[-1]">
+				<StarBackground /> {/* Render the starry background */}
+			</div>
+			<div id='planet-view'
 				style={{
 					backgroundSize: 'cover',
 					backgroundPosition: 'center',
@@ -81,6 +84,7 @@ function PlanetView() {
 					height: '100vh', // Set height to fill the viewport
 					overflowY: 'auto', // Enable vertical scrolling for the whole page
 					padding: '20px',
+					zIndex: 9999, // Ensure the content is above the background
 				}}
 			>
 				{/* Centered Image at the Top */}
@@ -92,6 +96,7 @@ function PlanetView() {
 						justifyContent: 'center',
 						alignItems: 'center',
 						padding: '20px',
+						zIndex: 2
 					}}
 				>
 					<img
@@ -134,9 +139,10 @@ function PlanetView() {
 						color: 'white',
 						marginBottom: '20px',
 						fontSize: '18px',
-						maxWidth: '800px',
-						margin: '0 auto',
+						maxWidth: '100%',
+						margin: '0 100px',
 						textAlign: 'center',
+						padding: '10px 20px',
 					}}
 				>
 					At Skylify, embark on a journey through the cosmos and

@@ -1,18 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { ThemeProvider, Box, Button } from '@mui/material';
 import { darkTheme } from '../constants';
 import loadingImg from '../assets/loading.gif';
 import PlanetSphere from './PlanetSphere';
-import StarBackground from './StarBackground'; // Import the StarBackground component
+import StarBackground from './StarBackground';
+import MarkdownIt from 'markdown-it';
+import { jsPDF } from 'jspdf';
+import html2canvas from 'html2canvas';
 
-import { useNavigate } from 'react-router-dom';
 function ExoplanetInfoPage() {
   const { planetName } = useParams();
   const [planet, setPlanet] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [report, setReport] = useState('');
   const navigate = useNavigate();
+  const md = new MarkdownIt(); // Initialize markdown-it
 
   useEffect(() => {
     const fetchData = async () => {
@@ -28,6 +32,44 @@ function ExoplanetInfoPage() {
     };
 
     fetchData();
+  }, [planetName]);
+
+  useEffect(() => {
+    const apiKey = "AIzaSyDEmoJPQhkqu9EWUQJCBGbQeSVKx5qjy_w";
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
+
+    const data = {
+      contents: [
+        {
+          parts: [
+            {
+              text: `Generate a report about ${planetName}, 1-2 Pages length`
+            }
+          ]
+        }
+      ]
+    };
+
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        setReport(data.candidates[0].content.parts[0].text); // Store the generated report text
+      })
+      .catch(error => {
+        console.error('There was a problem with the fetch operation:', error);
+      });
+
   }, [planetName]);
 
   function temperatureToColor(temperatureKelvin) {
@@ -50,9 +92,86 @@ function ExoplanetInfoPage() {
       g = Math.floor(255 * (1 - ((normalizedTemp - 0.66) * 3)));
       b = 0;
     }
-    console.log("p1: ", planet)
     return (r << 16) | (g << 8) | b;
   }
+
+  const savePDF = async () => {
+    const pdf = new jsPDF();
+    console.log("here", report);
+
+    // Split the report into lines for processing
+    const lines = report.split('\n'); // Split by new lines
+
+    let position = 10; // Initial vertical position
+    const pageHeight = pdf.internal.pageSize.height; // Get the height of the PDF page
+
+    lines.forEach((line) => {
+      // Handle bold text, italic text, and regular text
+      const textElements = line.split(/(\*\*.*?\*\*|\*.*?\*|~~.*?~~)/g); // Split by bold (**text**), italic (*text*), and strikethrough (~~text~~)
+
+      textElements.forEach((element) => {
+        if (element.startsWith('**') && element.endsWith('**')) {
+          // Bold text
+          pdf.setFont("helvetica", "bold");
+          const boldText = element.replace(/\*\*/g, ''); // Remove '**'
+          const boldLines = pdf.splitTextToSize(boldText, 190);
+
+          boldLines.forEach(boldLine => {
+            if (position + 10 > pageHeight) {
+              pdf.addPage(); // Create a new page
+              position = 10; // Reset position
+            }
+            pdf.text(boldLine, 10, position);
+            position += 10; // Move down for the next line
+          });
+        } else if (element.startsWith('*') && element.endsWith('*')) {
+          // Italic text
+          pdf.setFont("helvetica", "italic");
+          const italicText = element.replace(/\*/g, ''); // Remove '*'
+          const italicLines = pdf.splitTextToSize(italicText, 190);
+
+          italicLines.forEach(italicLine => {
+            if (position + 10 > pageHeight) {
+              pdf.addPage(); // Create a new page
+              position = 10; // Reset position
+            }
+            pdf.text(italicLine, 10, position);
+            position += 10; // Move down for the next line
+          });
+        } else if (element.startsWith('~~') && element.endsWith('~~')) {
+          // Strikethrough text
+          pdf.setFont("helvetica", "normal");
+          const strikeText = element.replace(/~~/g, ''); // Remove '~~'
+          const strikeLines = pdf.splitTextToSize(strikeText, 190);
+
+          strikeLines.forEach(strikeLine => {
+            if (position + 10 > pageHeight) {
+              pdf.addPage(); // Create a new page
+              position = 10; // Reset position
+            }
+            pdf.text(strikeLine, 10, position);
+            position += 10; // Move down for the next line
+          });
+        } else if (element.trim() !== '') {
+          // Regular text
+          pdf.setFont("helvetica", "normal");
+          const textLines = pdf.splitTextToSize(element, 190); // Split lines for wrapping
+
+          textLines.forEach(textLine => {
+            if (position + 10 > pageHeight) {
+              pdf.addPage(); // Create a new page
+              position = 10; // Reset position
+            }
+            pdf.text(textLine, 10, position);
+            position += 10; // Move down for the next line
+          });
+        }
+      });
+    });
+
+    // Save the PDF
+    pdf.save('exoplanet_report.pdf');
+  };
 
   return (
     loading ? (
@@ -164,11 +283,27 @@ function ExoplanetInfoPage() {
               >
                 Visit the Night Sky
               </Button>
+              <Button
+                onClick={savePDF}
+                size="small"
+                sx={{
+                  padding: '10px',
+                  bgcolor: report ? 'lightgreen' : 'transparent', // Change color based on report readiness
+                  color: 'white',
+                  border: '1px solid white',
+                  marginTop: '10px',
+                  '&:hover': {
+                    bgcolor: report ? 'lightgreen' : 'rgba(0, 0, 0, 0.1)', // Adjust hover background
+                  },
+                }}
+                disabled={!report} // Disable button if report is not ready
+              >
+                Download an AI-Report as PDF
+              </Button>
             </div>
           </div>
         </div>
       </ThemeProvider>
-
     ) : (
       <p>No planet information available.</p>
     )
