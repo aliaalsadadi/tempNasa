@@ -1,18 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import botImage from '../assets/bot.png';
+import { GoogleGenerativeAI } from "@google/generative-ai";
+
+const apiKey = "AIzaSyDEmoJPQhkqu9EWUQJCBGbQeSVKx5qjy_w";
+const genAI = new GoogleGenerativeAI(apiKey);
+
+const model = genAI.getGenerativeModel({
+  model: "tunedModels/skylify-ild09jqmuzw9",
+});
+
+const generationConfig = {
+  temperature: 1,
+  topP: 0.95,
+  topK: 64,
+  maxOutputTokens: 8192,
+  responseMimeType: "text/plain",
+};
+
 const ChatBot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
+  const [isWaiting, setIsWaiting] = useState(false);
 
   useEffect(() => {
-    // Load chat history from local storage on component mount
     const storedMessages = JSON.parse(localStorage.getItem('chatMessages')) || [];
     setMessages(storedMessages);
   }, []);
 
   useEffect(() => {
-    // Save messages to local storage whenever messages change
     localStorage.setItem('chatMessages', JSON.stringify(messages));
   }, [messages]);
 
@@ -24,49 +39,30 @@ const ChatBot = () => {
     e.preventDefault();
     if (!inputMessage) return;
 
-    // Create the user's message object
     const userMessage = { text: inputMessage, fromUser: true };
-
-    // Update the messages state
     setMessages((prevMessages) => [...prevMessages, userMessage]);
 
-    // Prepare the request body for the API
-    const requestBody = {
-      messages: [
-        { role: 'system', content: 'You are skylify, an AI assistant.' },
-        { role: 'user', content: inputMessage }
-      ],
-      model: 'gpt-4o',
-      max_tokens: 100,
-      temperature: 0.9,
-    };
-
-    const options = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-rapidapi-host': 'cheapest-gpt-4-turbo-gpt-4-vision-chatgpt-openai-ai-api.p.rapidapi.com',
-        'x-rapidapi-key': '7f03aff49bmshe837fafbc6d7e04p1b35f3jsn39f439877847',
-      },
-      body: JSON.stringify(requestBody),
-    };
+    setInputMessage('');
+    setIsWaiting(true);
 
     try {
-      const response = await fetch('https://cheapest-gpt-4-turbo-gpt-4-vision-chatgpt-openai-ai-api.p.rapidapi.com/v1/chat/completions', options);
-      const data = await response.json();
+      const chatSession = model.startChat({
+        generationConfig,
+        history: [],
+      });
 
-      // Check if the response contains a valid message
-      if (data.choices && data.choices.length > 0) {
-        const botResponse = { text: data.choices[0].message.content, fromUser: false };
+      const result = await chatSession.sendMessage(inputMessage);
+
+      if (result.response) {
+        const botResponseText = result.response.text().replace(/##+/g, '**');
+        const botResponse = { text: botResponseText, fromUser: false };
         setMessages((prevMessages) => [...prevMessages, botResponse]);
-      } else {
-        console.error('No valid response from the API');
       }
 
-      // Clear the input field after sending
-      setInputMessage('');
+      setIsWaiting(false);
     } catch (error) {
       console.error('Error sending message:', error);
+      setIsWaiting(false);
     }
   };
 
@@ -76,10 +72,8 @@ const ChatBot = () => {
         onClick={toggleChat}
         className="fixed bottom-5 right-10 cursor-pointer text-xl text-white bg-blue-600 p-2 rounded-full shadow-lg w-9 h-9 flex items-center justify-center"
       >
-        {isOpen ? (
-          <span className="text-2xl">▼</span>
-        ) : (
-          <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="800px" height="800px" viewBox="0 0 128 128" aria-hidden="true" role="img" class="iconify iconify--noto" preserveAspectRatio="xMidYMid meet">
+        {isOpen ? <span className="text-2xl">▼</span> :
+          <svg xmlns="http://www.w3.org/2000/svg" width="800px" height="800px" viewBox="0 0 128 128" aria-hidden="true" role="img" class="iconify iconify--noto" preserveAspectRatio="xMidYMid meet">
 
             <linearGradient id="IconifyId17ecdb2904d178eab5675" gradientUnits="userSpaceOnUse" x1="63.874" y1="4.412" x2="63.874" y2="35.688" gradientTransform="matrix(1 0 0 -1 0 128)">
 
@@ -410,7 +404,7 @@ const ChatBot = () => {
             </g>
 
           </svg>
-        )}
+        }
       </div>
 
       {isOpen && (
@@ -423,10 +417,17 @@ const ChatBot = () => {
               <div key={index} className={`my-2 flex ${msg.fromUser ? 'justify-start' : 'justify-end'}`}>
                 <div className={`p-3 rounded-lg ${msg.fromUser ? 'bg-green-600' : 'bg-blue-600'} max-w-xs break-words`}>
                   <strong>{msg.fromUser ? 'You: ' : 'Skylify: '}</strong>
-                  {msg.text}
+                  <span dangerouslySetInnerHTML={{ __html: msg.text }} />
                 </div>
               </div>
             ))}
+            {isWaiting && (
+              <div className="my-2 flex justify-center">
+                <div className="p-3 rounded-lg bg-gray-600 max-w-xs break-words">
+                  <strong>Skylify: </strong>Waiting...
+                </div>
+              </div>
+            )}
           </div>
           <form onSubmit={sendMessage} className="flex p-4 border-t border-gray-700 bg-gray-800 rounded-b-lg">
             <input
