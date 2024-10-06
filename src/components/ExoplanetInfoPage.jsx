@@ -288,12 +288,12 @@ function ExoplanetInfoPage() {
                 size="small"
                 sx={{
                   padding: '10px',
-                  bgcolor: report ? 'lightgreen' : 'transparent', // Change color based on report readiness
+                  bgcolor: report ? 'rgb(78,132,89)' : 'transparent', // Change color based on report readiness
                   color: 'white',
                   border: '1px solid white',
                   marginTop: '10px',
                   '&:hover': {
-                    bgcolor: report ? 'lightgreen' : 'rgba(0, 0, 0, 0.1)', // Adjust hover background
+                    bgcolor: report ? 'rgb(78,132,89)' : 'rgba(0, 0, 0, 0.1)', // Adjust hover background
                   },
                 }}
                 disabled={!report} // Disable button if report is not ready
