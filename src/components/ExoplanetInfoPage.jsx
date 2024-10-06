@@ -106,64 +106,60 @@ function ExoplanetInfoPage() {
     const pageHeight = pdf.internal.pageSize.height; // Get the height of the PDF page
 
     lines.forEach((line) => {
-      // Handle bold text, italic text, and regular text
-      const textElements = line.split(/(\*\*.*?\*\*|\*.*?\*|~~.*?~~)/g); // Split by bold (**text**), italic (*text*), and strikethrough (~~text~~)
+      // Handling text formatting
+      const textElements = line.split(/(\*\*.*?\*\*|\*.*?\*|~~.*?~~)/g);
 
       textElements.forEach((element) => {
         if (element.startsWith('**') && element.endsWith('**')) {
-          // Bold text
           pdf.setFont("helvetica", "bold");
-          const boldText = element.replace(/\*\*/g, ''); // Remove '**'
+          const boldText = element.replace(/\*\*/g, '');
           const boldLines = pdf.splitTextToSize(boldText, 190);
 
           boldLines.forEach(boldLine => {
             if (position + 10 > pageHeight) {
-              pdf.addPage(); // Create a new page
-              position = 10; // Reset position
+              pdf.addPage();
+              position = 10;
             }
             pdf.text(boldLine, 10, position);
-            position += 10; // Move down for the next line
+            position += 10;
           });
         } else if (element.startsWith('*') && element.endsWith('*')) {
-          // Italic text
           pdf.setFont("helvetica", "italic");
-          const italicText = element.replace(/\*/g, ''); // Remove '*'
+          const italicText = element.replace(/\*/g, '');
           const italicLines = pdf.splitTextToSize(italicText, 190);
 
           italicLines.forEach(italicLine => {
             if (position + 10 > pageHeight) {
-              pdf.addPage(); // Create a new page
-              position = 10; // Reset position
+              pdf.addPage();
+              position = 10;
             }
             pdf.text(italicLine, 10, position);
-            position += 10; // Move down for the next line
+            position += 10;
           });
         } else if (element.startsWith('~~') && element.endsWith('~~')) {
-          // Strikethrough text
           pdf.setFont("helvetica", "normal");
-          const strikeText = element.replace(/~~/g, ''); // Remove '~~'
+          const strikeText = element.replace(/~~/g, '');
           const strikeLines = pdf.splitTextToSize(strikeText, 190);
 
           strikeLines.forEach(strikeLine => {
             if (position + 10 > pageHeight) {
-              pdf.addPage(); // Create a new page
-              position = 10; // Reset position
+              pdf.addPage();
+              position = 10;
             }
             pdf.text(strikeLine, 10, position);
-            position += 10; // Move down for the next line
+            position += 10;
           });
         } else if (element.trim() !== '') {
-          // Regular text
           pdf.setFont("helvetica", "normal");
-          const textLines = pdf.splitTextToSize(element, 190); // Split lines for wrapping
+          const textLines = pdf.splitTextToSize(element, 190);
 
           textLines.forEach(textLine => {
             if (position + 10 > pageHeight) {
-              pdf.addPage(); // Create a new page
-              position = 10; // Reset position
+              pdf.addPage();
+              position = 10;
             }
             pdf.text(textLine, 10, position);
-            position += 10; // Move down for the next line
+            position += 10;
           });
         }
       });
@@ -171,6 +167,10 @@ function ExoplanetInfoPage() {
 
     // Save the PDF
     pdf.save('exoplanet_report.pdf');
+  };
+
+  const roundToFiveDigits = (num) => {
+    return Number.isFinite(num) ? Number(num.toFixed(5)) : num;
   };
 
   return (
@@ -197,20 +197,34 @@ function ExoplanetInfoPage() {
       <ThemeProvider theme={darkTheme}>
         <div className="min-h-screen bg-black flex flex-col items-center justify-center p-6">
           <div className="w-full h-full min-h-screen absolute">
-            <StarBackground /> {/* Render the starry background */}
+            <StarBackground />
           </div>
+          <Button
+            variant="outlined"
+            onClick={() => navigate(-1)} // Navigate back
+            sx={{
+              position: 'absolute',
+              top: '20px',
+              left: '20px',
+              color: 'white',
+              backgroundColor: 'rgba(255, 255, 255, 0.2)',
+              border: '1px solid white',
+              '&:hover': {
+                backgroundColor: 'rgba(255, 255, 255, 0.4)',
+              },
+            }}
+          >
+            Back
+          </Button>
           <p id="planet-name" style={{ zIndex: 1 }}>{planet.pl_name}</p>
           <div className="flex justify-around items-center w-full max-w-7xl" style={{ zIndex: 1 }}>
-            <div
-              className="text-white max-w-md p-5 rounded-lg"
-              style={{ height: 'auto' }} // Set a max height and add vertical scroll if content exceeds
-            >
+            <div className="text-white max-w-md p-5 rounded-lg" style={{ height: 'auto' }}>
               <div className="bg-[#393D41] text-white max-w-md p-5 rounded-lg">
                 <h2 className="text-3xl font-bold mb-4">{planet.name}</h2>
-                <div className="grid grid-cols-3 gap-4 "> {/* Align fields to the right */}
-                  <div className="border-b border-gray-500 pb-2 flex flex-col items-start justify-between flex flex-col items-start justify-start	">
+                <div className="grid grid-cols-3 gap-4 ">
+                  <div className="border-b border-gray-500 pb-2 flex flex-col items-start justify-between">
                     <div className="text-sm">Discovery Year:</div>
-                    <div className="text-lg">{planet?.disc_year}</div>
+                    <div className="text-lg">{roundToFiveDigits(planet?.disc_year)}</div>
                   </div>
                   <div className="border-b border-gray-500 pb-2 flex flex-col items-start justify-between">
                     <div className="text-sm">Discovery Method:</div>
@@ -218,43 +232,43 @@ function ExoplanetInfoPage() {
                   </div>
                   <div className="border-b border-gray-500 pb-2 flex flex-col items-start justify-between">
                     <div className="text-sm">Right Ascension (RA):</div>
-                    <div className="text-lg">{planet?.ra}</div>
+                    <div className="text-lg">{roundToFiveDigits(planet?.ra)}</div>
                   </div>
                   <div className="border-b border-gray-500 pb-2 flex flex-col items-start justify-between">
                     <div className="text-sm">Declination (Dec):</div>
-                    <div className="text-lg">{planet?.dec}</div>
+                    <div className="text-lg">{roundToFiveDigits(planet?.dec)}</div>
                   </div>
                   <div className="border-b border-gray-500 pb-2 flex flex-col items-start justify-between">
                     <div className="text-sm">Radius (Earth units):</div>
-                    <div className="text-lg">{planet?.pl_rade}</div>
+                    <div className="text-lg">{roundToFiveDigits(planet?.pl_rade)}</div>
                   </div>
                   <div className="border-b border-gray-500 pb-2 flex flex-col items-start justify-between">
                     <div className="text-sm">Radius (Jupiter units):</div>
-                    <div className="text-lg">{planet?.pl_radj}</div>
+                    <div className="text-lg">{roundToFiveDigits(planet?.pl_radj)}</div>
                   </div>
                   <div className="border-b border-gray-500 pb-2 flex flex-col items-start justify-between">
                     <div className="text-sm">Mass (Earth units):</div>
-                    <div className="text-lg">{planet?.pl_masse}</div>
+                    <div className="text-lg">{roundToFiveDigits(planet?.pl_masse)}</div>
                   </div>
                   <div className="border-b border-gray-500 pb-2 flex flex-col items-start justify-between">
                     <div className="text-sm">Mass (Jupiter units):</div>
-                    <div className="text-lg">{planet?.pl_massj}</div>
+                    <div className="text-lg">{roundToFiveDigits(planet?.pl_massj)}</div>
                   </div>
                   <div className="border-b border-gray-500 pb-2 flex flex-col items-start justify-between">
                     <div className="text-sm">Equilibrium Temperature:</div>
-                    <div className="text-lg">{planet?.pl_eqt} K</div>
+                    <div className="text-lg">{roundToFiveDigits(planet?.pl_eqt)} K</div>
                   </div>
                   <div className="border-b border-gray-500 pb-2 flex flex-col items-start justify-between">
                     <div className="text-sm">Orbital Period (days):</div>
-                    <div className="text-lg">{planet?.pl_orbper}</div>
+                    <div className="text-lg">{roundToFiveDigits(planet?.pl_orbper)}</div>
                   </div>
                   <div className="border-b border-gray-500 pb-2 flex flex-col items-start justify-between">
                     <div className="text-sm">Angular Separation:</div>
-                    <div className="text-lg">{planet?.pl_angsep}</div>
+                    <div className="text-lg">{roundToFiveDigits(planet?.pl_angsep)}</div>
                   </div>
                   <div className="border-b border-gray-500 pb-2 flex flex-col items-start justify-between">
                     <div className="text-sm">Density:</div>
-                    <div className="text-lg">{planet?.pl_dens}</div>
+                    <div className="text-lg">{roundToFiveDigits(planet?.pl_dens)}</div>
                   </div>
                   <div className="border-b border-gray-500 pb-2 flex flex-col items-start justify-between">
                     <div className="text-sm">Radial Velocity Amplitude:</div>
@@ -271,13 +285,13 @@ function ExoplanetInfoPage() {
                 onClick={() => navigate(`/stars/${planet.ra}/${planet.dec}`)}
                 size="small"
                 sx={{
-                  padding: '10px', // Adjust padding as needed
+                  padding: '10px',
                   bgcolor: 'transparent',
                   color: 'white',
                   border: '1px solid white',
                   marginTop: '20px',
                   '&:hover': {
-                    bgcolor: 'rgba(0, 0, 0, 0.1)', // Adjust hover background as needed
+                    bgcolor: 'rgba(0, 0, 0, 0.1)',
                   },
                 }}
               >
@@ -288,15 +302,15 @@ function ExoplanetInfoPage() {
                 size="small"
                 sx={{
                   padding: '10px',
-                  bgcolor: report ? 'rgb(78,132,89)' : 'transparent', // Change color based on report readiness
+                  bgcolor: report ? 'rgb(78,132,89)' : 'transparent',
                   color: 'white',
                   border: '1px solid white',
                   marginTop: '10px',
                   '&:hover': {
-                    bgcolor: report ? 'rgb(78,132,89)' : 'rgba(0, 0, 0, 0.1)', // Adjust hover background
+                    bgcolor: report ? 'rgb(78,132,89)' : 'rgba(0, 0, 0, 0.1)',
                   },
                 }}
-                disabled={!report} // Disable button if report is not ready
+                disabled={!report}
               >
                 Download an AI-Report as PDF
               </Button>
