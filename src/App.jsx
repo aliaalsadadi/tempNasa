@@ -10,15 +10,49 @@ import PlanetView from './components/PlanetView';
 import ExoplanetInfoPage from './components/ExoplanetInfoPage';
 import MorePlanetView from './components/MorePlanets';
 import AnimatedCursor from 'react-animated-cursor';
-import ChatBot from './components/ChatBot';
+import ChatBot from './components/Chatbot';
+import { useEffect } from 'react';
+
 function App() {
+	const playClickSfx = () => {
+		new Audio('star-click-sfx.mp3').play();
+	};
+
+	useEffect(() => {
+		const backgroundAudio = new Audio('engine-humming-sfx.mp3');
+		backgroundAudio.loop = true;
+
+		const playBackgroundAudio = () => {
+			backgroundAudio.play().catch(error => {
+				console.error('Audio play failed:', error);
+			});
+			// Remove the event listener after the first interaction
+			document.removeEventListener('click', playBackgroundAudio);
+		};
+
+		// Add event listener for explicit user interaction via a click to play background sound
+		document.addEventListener('click', playBackgroundAudio);
+
+		// Add event listener for the click sound effect
+		document.addEventListener('click', playClickSfx);
+
+		return () => {
+			backgroundAudio.pause();
+			document.removeEventListener('click', playBackgroundAudio);
+			document.removeEventListener('click', playClickSfx);
+		};
+	}, []);
+
 	return (
 		<div className="App">
 			{/* <AnimatedCursor></AnimatedCursor> */}
 			<Router>
 				<Routes>
 					<Route path="/stars/:ra/:dec" element={<StarView />} />
-					<Route path="/exoplanet/:planetName/" element={<ExoplanetInfoPage />} />
+					<Route
+						path="/exoplanet/:planetName/"
+						element={<ExoplanetInfoPage />}
+					/>
 					<Route path="/" element={<PlanetView />} />
 					<Route path="/more-planets" element={<MorePlanetView />} />
 				</Routes>

@@ -33,7 +33,7 @@ function StarView() {
 	const getImage = async () => {
 		// Capture the screenshot of the WebGL canvas
 		const canvas = document.querySelector('canvas');
-		console.log(canvas);
+		// console.log(canvas);
 		console.log('Screenshot with stars:', canvas.toDataURL('image/png')); // Log the screenshot
 
 		// Return the image

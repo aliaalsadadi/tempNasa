@@ -67,10 +67,10 @@ const ChatBot = () => {
   };
 
   return (
-    <div style={{ zIndex: 1000 }}>
+    <div style={{ zIndex: 1000,position: 'relative'}}>
       <div
         onClick={toggleChat}
-        className="fixed bottom-5 right-10 cursor-pointer text-xl text-white bg-blue-600 p-2 rounded-full shadow-lg w-9 h-9 flex items-center justify-center"
+        className="fixed bottom-5 right-10 cursor-pointer text-xl text-white bg-red-600 p-2 rounded-full shadow-lg w-9 h-9 flex items-center justify-center"
       >
         {isOpen ? <span className="text-2xl">▼</span> :
           <svg xmlns="http://www.w3.org/2000/svg" width="800px" height="800px" viewBox="0 0 128 128" aria-hidden="true" role="img" class="iconify iconify--noto" preserveAspectRatio="xMidYMid meet">
@@ -415,7 +415,7 @@ const ChatBot = () => {
           <div className="p-4 max-h-96 overflow-y-auto">
             {messages.map((msg, index) => (
               <div key={index} className={`my-2 flex ${msg.fromUser ? 'justify-start' : 'justify-end'}`}>
-                <div className={`p-3 rounded-lg ${msg.fromUser ? 'bg-green-600' : 'bg-blue-600'} max-w-xs break-words`}>
+                <div className={`p-3 rounded-lg ${msg.fromUser ? 'bg-green-600' : 'bg-red-600'} max-w-xs break-words`}>
                   <strong>{msg.fromUser ? 'You: ' : 'Skylify: '}</strong>
                   <span dangerouslySetInnerHTML={{ __html: msg.text }} />
                 </div>
@@ -437,7 +437,7 @@ const ChatBot = () => {
               placeholder="Type a message..."
               className="flex-grow mr-2 p-2 rounded-lg bg-gray-700 border border-gray-600 text-white"
             />
-            <button type="submit" className="p-2 rounded-lg bg-blue-600 text-white">
+            <button type="submit" className="p-2 rounded-lg bg-red-600 text-white">
               Send
             </button>
           </form>
