@@ -17,7 +17,7 @@ function ExoplanetInfoPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/getPlanets/?name=${planetName}`);
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/getPlanets/?name=${planetName}&detailed=True`);
         const data = await response.json();
         setPlanet(data[0]);
       } catch (error) {
@@ -50,6 +50,7 @@ function ExoplanetInfoPage() {
       g = Math.floor(255 * (1 - ((normalizedTemp - 0.66) * 3)));
       b = 0;
     }
+    console.log("p1: ", planet)
     return (r << 16) | (g << 8) | b;
   }
 
@@ -81,49 +82,72 @@ function ExoplanetInfoPage() {
           </div>
           <p id="planet-name" style={{ zIndex: 1 }}>{planet.pl_name}</p>
           <div className="flex justify-around items-center w-full max-w-7xl" style={{ zIndex: 1 }}>
-            <div className="text-white max-w-md p-5 rounded-lg">
+            <div
+              className="text-white max-w-md p-5 rounded-lg"
+              style={{ height: 'auto' }} // Set a max height and add vertical scroll if content exceeds
+            >
               <div className="bg-[#393D41] text-white max-w-md p-5 rounded-lg">
                 <h2 className="text-3xl font-bold mb-4">{planet.name}</h2>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="border-b border-gray-500 pb-2">
+                <div className="grid grid-cols-3 gap-4 "> {/* Align fields to the right */}
+                  <div className="border-b border-gray-500 pb-2 flex flex-col items-start justify-between flex flex-col items-start justify-start	">
                     <div className="text-sm">Discovery Year:</div>
                     <div className="text-lg">{planet?.disc_year}</div>
                   </div>
-                  <div className="border-b border-gray-500 pb-2">
+                  <div className="border-b border-gray-500 pb-2 flex flex-col items-start justify-between">
                     <div className="text-sm">Discovery Method:</div>
                     <div className="text-lg">{planet?.discover_method}</div>
                   </div>
-                  <div className="border-b border-gray-500 pb-2">
+                  <div className="border-b border-gray-500 pb-2 flex flex-col items-start justify-between">
                     <div className="text-sm">Right Ascension (RA):</div>
                     <div className="text-lg">{planet?.ra}</div>
                   </div>
-                  <div className="border-b border-gray-500 pb-2">
+                  <div className="border-b border-gray-500 pb-2 flex flex-col items-start justify-between">
                     <div className="text-sm">Declination (Dec):</div>
                     <div className="text-lg">{planet?.dec}</div>
                   </div>
-                  <div className="border-b border-gray-500 pb-2">
+                  <div className="border-b border-gray-500 pb-2 flex flex-col items-start justify-between">
                     <div className="text-sm">Radius (Earth units):</div>
                     <div className="text-lg">{planet?.pl_rade}</div>
                   </div>
-                  <div className="border-b border-gray-500 pb-2">
+                  <div className="border-b border-gray-500 pb-2 flex flex-col items-start justify-between">
                     <div className="text-sm">Radius (Jupiter units):</div>
                     <div className="text-lg">{planet?.pl_radj}</div>
                   </div>
-                  <div className="border-b border-gray-500 pb-2">
+                  <div className="border-b border-gray-500 pb-2 flex flex-col items-start justify-between">
                     <div className="text-sm">Mass (Earth units):</div>
                     <div className="text-lg">{planet?.pl_masse}</div>
                   </div>
-                  <div className="border-b border-gray-500 pb-2">
+                  <div className="border-b border-gray-500 pb-2 flex flex-col items-start justify-between">
                     <div className="text-sm">Mass (Jupiter units):</div>
                     <div className="text-lg">{planet?.pl_massj}</div>
                   </div>
-                  <div className="border-b border-gray-500 pb-2">
+                  <div className="border-b border-gray-500 pb-2 flex flex-col items-start justify-between">
                     <div className="text-sm">Equilibrium Temperature:</div>
                     <div className="text-lg">{planet?.pl_eqt} K</div>
                   </div>
+                  <div className="border-b border-gray-500 pb-2 flex flex-col items-start justify-between">
+                    <div className="text-sm">Orbital Period (days):</div>
+                    <div className="text-lg">{planet?.pl_orbper}</div>
+                  </div>
+                  <div className="border-b border-gray-500 pb-2 flex flex-col items-start justify-between">
+                    <div className="text-sm">Angular Separation:</div>
+                    <div className="text-lg">{planet?.pl_angsep}</div>
+                  </div>
+                  <div className="border-b border-gray-500 pb-2 flex flex-col items-start justify-between">
+                    <div className="text-sm">Density:</div>
+                    <div className="text-lg">{planet?.pl_dens}</div>
+                  </div>
+                  <div className="border-b border-gray-500 pb-2 flex flex-col items-start justify-between">
+                    <div className="text-sm">Radial Velocity Amplitude:</div>
+                    <div className="text-lg">{planet?.pl_rvamp || 'No information'}</div>
+                  </div>
                 </div>
-
               </div>
+            </div>
+            <div className="flex flex-col items-center">
+              <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minWidth: '300px', minHeight: '300px' }}>
+                <PlanetSphere radius={1.05} color={temperatureToColor(planet?.pl_eqt)} width={250} height={250} />
+              </Box>
               <Button
                 onClick={() => navigate(`/stars/${planet.ra}/${planet.dec}`)}
                 size="small"
@@ -141,14 +165,10 @@ function ExoplanetInfoPage() {
                 Visit the Night Sky
               </Button>
             </div>
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minWidth: '300px', minHeight: '300px' }}>
-              <PlanetSphere radius={1.05} color={temperatureToColor(planet?.pl_eqt)} width={250} height={250} />
-            </Box>
           </div>
-
-
         </div>
       </ThemeProvider>
+
     ) : (
       <p>No planet information available.</p>
     )
