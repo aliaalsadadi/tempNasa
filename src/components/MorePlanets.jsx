@@ -40,19 +40,22 @@ function MorePlanetView() {
 
 	const filteredPlanets = queryResult
 		? queryResult.filter(planet =>
-			planet.name.toLowerCase().includes(searchQuery.toLowerCase())
-		)
+				planet.name.toLowerCase().includes(searchQuery.toLowerCase()),
+		  )
 		: [];
 
 	const indexOfLastPlanet = currentPage * itemsPerPage;
 	const indexOfFirstPlanet = indexOfLastPlanet - itemsPerPage;
-	const currentPlanets = filteredPlanets.slice(indexOfFirstPlanet, indexOfLastPlanet);
+	const currentPlanets = filteredPlanets.slice(
+		indexOfFirstPlanet,
+		indexOfLastPlanet,
+	);
 
 	const handlePageChange = (event, value) => {
 		setCurrentPage(value);
 	};
 
-	const handleSearchChange = (event) => {
+	const handleSearchChange = event => {
 		setSearchQuery(event.target.value);
 		setCurrentPage(1); // Reset to first page on search
 	};
@@ -62,7 +65,6 @@ function MorePlanetView() {
 			planetCardsRef.current.scrollIntoView({ behavior: 'smooth' });
 		}
 	};
-
 
 	return (
 		<ThemeProvider theme={darkTheme}>
@@ -78,34 +80,35 @@ function MorePlanetView() {
 				}}
 			>
 				{/* Centered Image at the Top */}
-			
-				<div style={{
-					display: 'flex',
-					justifyContent: 'center', // Center horizontally
-					marginBottom: '20px', // Space below the input
-				}}>
+
+				<div
+					style={{
+						display: 'flex',
+						justifyContent: 'center', // Center horizontally
+						marginBottom: '20px', // Space below the input
+					}}
+				>
 					<TextField
 						label="Search Planets"
 						variant="outlined"
 						value={searchQuery} // Ensure value is set correctly
 						onChange={handleSearchChange} // Update state on change
 						InputProps={{
-							style: { 
-								backgroundColor: 'black', 
-								color: 'white', 
+							style: {
+								backgroundColor: 'black',
+								color: 'white',
 								textAlign: 'center', // Center the text
 								borderColor: 'transparent',
 							},
 						}}
 						InputLabelProps={{
-							style: { 
+							style: {
 								color: 'white', // Color for the label
 							},
 						}}
-						style={{ 
+						style={{
 							width: '300px', // Set a specific width
 							borderRadius: '20px', // Make it less square
-							
 						}}
 					/>
 				</div>
@@ -124,13 +127,7 @@ function MorePlanetView() {
 					}}
 				>
 					{currentPlanets.map(planetData => (
-						<Grid
-							item
-							xs={2}
-							sm={4}
-							md={4}
-							key={planetData.name}
-						>
+						<Grid item xs={2} sm={4} md={4} key={planetData.name}>
 							<PlanetCard data={planetData} />
 						</Grid>
 					))}
