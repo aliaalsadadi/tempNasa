@@ -5,7 +5,7 @@ import { darkTheme } from '../constants';
 import PlanetCard from './PlanetCard';
 import Grid from '@mui/material/Grid';
 import spaceBackground from '../assets/betterspace.jpg'; // Import your space image
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 function MorePlanetView() {
 	const navigate = useNavigate();
@@ -21,22 +21,20 @@ function MorePlanetView() {
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				const response = await fetch(apiUrl, {
-					method: 'GET',
-					headers: {
-						Accept: 'application/json',
-						'Content-Type': 'application/json',
-					},
-				});
+				const response = await fetch(
+					`${
+						import.meta.env.VITE_API_URL
+					}/getPlanets/?name=${searchQuery}`,
+				);
 				const data = await response.json();
 				setQueryResult(data);
 			} catch (error) {
-				console.error('Error fetching data:', error);
+				console.log(error);
 			}
 		};
 
 		fetchData();
-	}, []);
+	}, [searchQuery]);
 
 	const filteredPlanets = queryResult
 		? queryResult.filter(planet =>

@@ -154,36 +154,63 @@ function PlanetView() {
 				<div
 					style={{
 						display: 'flex',
-						justifyContent: 'center', // Center horizontally
-						marginBottom: '20px', // Space below the input
+						justifyContent: 'center',
+						alignItems: 'center',
+						marginBottom: '20px',
 					}}
 				>
 					<TextField
 						label="Search Planets"
 						variant="outlined"
-						value={searchQuery} // Ensure value is set correctly
-						onChange={handleSearchChange} // Update state on change
+						value={searchQuery}
+						onChange={handleSearchChange}
 						InputProps={{
 							style: {
 								backgroundColor: 'black',
 								color: 'white',
-								textAlign: 'center', // Center the text
+								textAlign: 'center',
 								borderColor: 'transparent',
+								borderRadius: '25px', // Increased border radius
 							},
 						}}
 						InputLabelProps={{
 							style: {
-								color: 'white', // Color for the label
+								color: 'white',
 							},
 						}}
-						style={{
-							width: '300px', // Set a specific width
-							borderRadius: '20px', // Make it less square
+						sx={{
+							width: '300px',
+							'& .MuiOutlinedInput-root': {
+								borderRadius: '25px', // Ensure the outline is also rounded
+								'& fieldset': {
+									borderColor: 'rgba(255, 255, 255, 0.23)', // Light border color
+								},
+								'&:hover fieldset': {
+									borderColor: 'rgba(255, 255, 255, 0.5)', // Lighter border on hover
+								},
+								'&.Mui-focused fieldset': {
+									borderColor: 'white', // White border when focused
+								},
+							},
+							marginRight: '10px',
 						}}
 					/>
+					<Button
+						variant="contained"
+						style={{
+							color: 'white',
+							backgroundColor: 'black',
+							borderRadius: '20px',
+							border: '2px solid white',
+							'&:hover': {
+								backgroundColor: 'grey',
+							},
+						}}
+						onClick={goToMorePlanets}
+					>
+						More Planets
+					</Button>
 				</div>
-				{/* Explore Planets Button */}
-
 				{/* Container for the planet cards */}
 				<Grid
 					container
@@ -203,31 +230,6 @@ function PlanetView() {
 					))}
 				</Grid>
 
-				{filteredPlanets.length === 0 && (
-					<div
-						style={{
-							display: 'flex',
-							justifyContent: 'center',
-							marginTop: '20px',
-						}}
-					>
-						<Button
-							variant="contained"
-							style={{
-								color: 'white', // Text color
-								backgroundColor: 'black', // Button background color
-								borderRadius: '20px',
-								border: '2px solid white',
-								'&:hover': {
-									backgroundColor: 'grey', // Change background color on hover
-								},
-							}}
-							onClick={goToMorePlanets}
-						>
-							More Planets
-						</Button>
-					</div>
-				)}
 				{/* Add pagination controls */}
 				{filteredPlanets.length > 0 && (
 					<Pagination
