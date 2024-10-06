@@ -18,6 +18,15 @@ function App() {
 		new Audio('star-click-sfx.mp3').play();
 	};
 
+	const body = document.body;
+
+body.addEventListener('mousedown', () => {
+  body.classList.add('cursor-clicked'); // Add class for clicked cursor
+});
+
+body.addEventListener('mouseup', () => {
+  body.classList.remove('cursor-clicked'); // Remove class to revert to normal cursor
+});
 	useEffect(() => {
 		const backgroundAudio = new Audio('engine-humming-sfx.mp3');
 		backgroundAudio.loop = true;

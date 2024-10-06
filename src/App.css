@@ -4,6 +4,11 @@ body, html {
   padding: 0;
   height: 100%;
   overflow: hidden;
+  cursor: url('/public/cursor.png'), auto;
+}
+
+.cursor-clicked {
+  cursor: url('/public/click.png'), auto; /* Clicked cursor */
 }
 
 #root {
@@ -26,3 +31,4 @@ body, html {
   z-index: 0;
   overflow: hidden;
 }
+
