@@ -54,7 +54,7 @@ const ChatBot = () => {
       const result = await chatSession.sendMessage(inputMessage);
 
       if (result.response) {
-        const botResponseText = result.response.text().replace(/##+/g, '**');
+        const botResponseText = result.response.text();
         const botResponse = { text: botResponseText, fromUser: false };
         setMessages((prevMessages) => [...prevMessages, botResponse]);
       }
@@ -73,23 +73,23 @@ const ChatBot = () => {
         className="fixed bottom-5 right-10 cursor-pointer text-xl text-white bg-red-600 p-2 rounded-full shadow-lg w-9 h-9 flex items-center justify-center"
       >
         {isOpen ? <span className="text-2xl">▼</span> :
-          <svg xmlns="http://www.w3.org/2000/svg" width="800px" height="800px" viewBox="0 0 128 128" aria-hidden="true" role="img" class="iconify iconify--noto" preserveAspectRatio="xMidYMid meet">
+          <svg xmlns="http://www.w3.org/2000/svg" width="800px" height="800px" viewBox="0 0 128 128" aria-hidden="true" role="img" className="iconify iconify--noto" preserveAspectRatio="xMidYMid meet">
 
             <linearGradient id="IconifyId17ecdb2904d178eab5675" gradientUnits="userSpaceOnUse" x1="63.874" y1="4.412" x2="63.874" y2="35.688" gradientTransform="matrix(1 0 0 -1 0 128)">
 
-              <stop offset="0" stop-color="#b3b3b3">
+              <stop offset="0" stopColor="#b3b3b3">
 
               </stop>
 
-              <stop offset=".033" stop-color="#b7b7b7">
+              <stop offset=".033" stopColor="#b7b7b7">
 
               </stop>
 
-              <stop offset=".374" stop-color="#d9d9d9">
+              <stop offset=".374" stopColor="#d9d9d9">
 
               </stop>
 
-              <stop offset=".559" stop-color="#e6e6e6">
+              <stop offset=".559" stopColor="#e6e6e6">
 
               </stop>
 
@@ -113,19 +113,19 @@ const ChatBot = () => {
 
             <linearGradient id="IconifyId17ecdb2904d178eab5676" gradientUnits="userSpaceOnUse" x1="63.983" y1="36.167" x2="63.983" y2="18.139" gradientTransform="matrix(1 0 0 -1 0 128)">
 
-              <stop offset=".004" stop-color="#e6e6e6">
+              <stop offset=".004" stopColor="#e6e6e6">
 
               </stop>
 
-              <stop offset=".333" stop-color="#d9d9d9">
+              <stop offset=".333" stopColor="#d9d9d9">
 
               </stop>
 
-              <stop offset=".941" stop-color="#b7b7b7">
+              <stop offset=".941" stopColor="#b7b7b7">
 
               </stop>
 
-              <stop offset="1" stop-color="#b3b3b3">
+              <stop offset="1" stopColor="#b3b3b3">
 
               </stop>
 
@@ -151,11 +151,11 @@ const ChatBot = () => {
 
               <radialGradient id="IconifyId17ecdb2904d178eab5677" cx="101.142" cy="45.824" r="21.003" gradientTransform="matrix(1 0 0 .4912 -24.064 59.667)" gradientUnits="userSpaceOnUse">
 
-                <stop offset=".728" stop-color="#454140" stop-opacity="0">
+                <stop offset=".728" stopColor="#454140" stopOpacity="0">
 
                 </stop>
 
-                <stop offset="1" stop-color="#454140">
+                <stop offset="1" stopColor="#454140">
 
                 </stop>
 
@@ -167,11 +167,11 @@ const ChatBot = () => {
 
               <radialGradient id="IconifyId17ecdb2904d178eab5678" cx="80.457" cy="48.947" r="6.207" gradientTransform="matrix(-.9057 .4238 -.3144 -.6719 186.026 77.84)" gradientUnits="userSpaceOnUse">
 
-                <stop offset=".663" stop-color="#454140">
+                <stop offset=".663" stopColor="#454140">
 
                 </stop>
 
-                <stop offset="1" stop-color="#454140" stop-opacity="0">
+                <stop offset="1" stopColor="#454140" stopOpacity="0">
 
                 </stop>
 
@@ -183,11 +183,11 @@ const ChatBot = () => {
 
               <radialGradient id="IconifyId17ecdb2904d178eab5679" cx="96.543" cy="66.506" r="27.263" gradientTransform="matrix(-.0746 -.9972 .8311 -.0622 33.61 161.905)" gradientUnits="userSpaceOnUse">
 
-                <stop offset=".725" stop-color="#454140" stop-opacity="0">
+                <stop offset=".725" stopColor="#454140" stopOpacity="0">
 
                 </stop>
 
-                <stop offset="1" stop-color="#454140">
+                <stop offset="1" stopColor="#454140">
 
                 </stop>
 
@@ -199,11 +199,11 @@ const ChatBot = () => {
 
               <radialGradient id="IconifyId17ecdb2904d178eab5680" cx="46.342" cy="66.506" r="27.263" gradientTransform="matrix(.0746 -.9972 -.8311 -.0622 98.155 111.844)" gradientUnits="userSpaceOnUse">
 
-                <stop offset=".725" stop-color="#454140" stop-opacity="0">
+                <stop offset=".725" stopColor="#454140" stopOpacity="0">
 
                 </stop>
 
-                <stop offset="1" stop-color="#454140">
+                <stop offset="1" stopColor="#454140">
 
                 </stop>
 
@@ -215,11 +215,11 @@ const ChatBot = () => {
 
               <radialGradient id="IconifyId17ecdb2904d178eab5681" cx="50.941" cy="45.824" r="21.003" gradientTransform="matrix(-1 0 0 .4912 101.883 59.667)" gradientUnits="userSpaceOnUse">
 
-                <stop offset=".728" stop-color="#454140" stop-opacity="0">
+                <stop offset=".728" stopColor="#454140" stopOpacity="0">
 
                 </stop>
 
-                <stop offset="1" stop-color="#454140">
+                <stop offset="1" stopColor="#454140">
 
                 </stop>
 
@@ -231,11 +231,11 @@ const ChatBot = () => {
 
               <radialGradient id="IconifyId17ecdb2904d178eab5682" cx="30.256" cy="48.947" r="6.207" gradientTransform="matrix(.9057 .4238 .3144 -.6719 -12.537 99.116)" gradientUnits="userSpaceOnUse">
 
-                <stop offset=".663" stop-color="#454140">
+                <stop offset=".663" stopColor="#454140">
 
                 </stop>
 
-                <stop offset="1" stop-color="#454140" stop-opacity="0">
+                <stop offset="1" stopColor="#454140" stopOpacity="0">
 
                 </stop>
 
@@ -299,11 +299,11 @@ const ChatBot = () => {
 
               <radialGradient id="IconifyId17ecdb2904d178eab5683" cx="80.548" cy="79.47" r="32.723" gradientTransform="matrix(.3076 .9515 .706 -.2282 -.336 -9.978)" gradientUnits="userSpaceOnUse">
 
-                <stop offset=".699" stop-color="#454140" stop-opacity="0">
+                <stop offset=".699" stopColor="#454140" stopOpacity="0">
 
                 </stop>
 
-                <stop offset="1" stop-color="#454140">
+                <stop offset="1" stopColor="#454140">
 
                 </stop>
 
@@ -315,11 +315,11 @@ const ChatBot = () => {
 
               <radialGradient id="IconifyId17ecdb2904d178eab5684" cx="48.645" cy="115.151" r="8.58" gradientTransform="matrix(.8813 .4726 .5603 -1.045 -58.744 110.194)" gradientUnits="userSpaceOnUse">
 
-                <stop offset=".58" stop-color="#454140">
+                <stop offset=".58" stopColor="#454140">
 
                 </stop>
 
-                <stop offset="1" stop-color="#454140" stop-opacity="0">
+                <stop offset="1" stopColor="#454140" stopOpacity="0">
 
                 </stop>
 
@@ -331,11 +331,11 @@ const ChatBot = () => {
 
               <radialGradient id="IconifyId17ecdb2904d178eab5685" cx="45.2" cy="107.323" r="7.875" gradientTransform="matrix(1 0 0 -1.2233 0 151.966)" gradientUnits="userSpaceOnUse">
 
-                <stop offset=".702" stop-color="#454140" stop-opacity="0">
+                <stop offset=".702" stopColor="#454140" stopOpacity="0">
 
                 </stop>
 
-                <stop offset="1" stop-color="#454140">
+                <stop offset="1" stopColor="#454140">
 
                 </stop>
 
@@ -347,11 +347,11 @@ const ChatBot = () => {
 
               <radialGradient id="IconifyId17ecdb2904d178eab5686" cx="44.117" cy="93.422" r="14.77" gradientTransform="matrix(-.9657 -.2598 -.2432 .9037 109.44 -38.386)" gradientUnits="userSpaceOnUse">
 
-                <stop offset=".66" stop-color="#454140" stop-opacity="0">
+                <stop offset=".66" stopColor="#454140" stopOpacity="0">
 
                 </stop>
 
-                <stop offset="1" stop-color="#454140">
+                <stop offset="1" stopColor="#454140">
 
                 </stop>
 
@@ -363,11 +363,11 @@ const ChatBot = () => {
 
               <radialGradient id="IconifyId17ecdb2904d178eab5687" cx="40.613" cy="79.16" r="15.507" gradientTransform="matrix(.9907 .1363 .1915 -1.3921 -14.778 153.503)" gradientUnits="userSpaceOnUse">
 
-                <stop offset=".598" stop-color="#454140" stop-opacity="0">
+                <stop offset=".598" stopColor="#454140" stopOpacity="0">
 
                 </stop>
 
-                <stop offset="1" stop-color="#454140">
+                <stop offset="1" stopColor="#454140">
 
                 </stop>
 
@@ -383,15 +383,15 @@ const ChatBot = () => {
 
               <radialGradient id="IconifyId17ecdb2904d178eab5688" cx="64.775" cy="120.5" r="26.001" gradientTransform="matrix(1 0 0 -1 0 128)" gradientUnits="userSpaceOnUse">
 
-                <stop offset=".005" stop-color="#f2f2f2">
+                <stop offset=".005" stopColor="#f2f2f2">
 
                 </stop>
 
-                <stop offset=".422" stop-color="#e5e5e5">
+                <stop offset=".422" stopColor="#e5e5e5">
 
                 </stop>
 
-                <stop offset="1" stop-color="#ccc">
+                <stop offset="1" stopColor="#ccc">
 
                 </stop>
 
