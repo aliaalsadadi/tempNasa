@@ -1,4 +1,3 @@
-import { useTexture } from '@react-three/drei';
 import { useLoader } from '@react-three/fiber';
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
@@ -10,7 +9,6 @@ function PlanetSphere({
 	path = 'low-mass.jpg',
 	width = 150,
 	height = 150,
-	orbitalPeriod,
 }) {
 	const canvasRef = useRef(null);
 	const colormap = useLoader(THREE.TextureLoader, textureJPG);
@@ -24,6 +22,7 @@ function PlanetSphere({
 			canvas: canvasRef.current,
 		});
 		renderer.setSize(width, height);
+		renderer.shadowMap.enabled = true; // Enable shadow mapping
 
 		// Create a sphere geometry
 		const geometry = new THREE.IcosahedronGeometry(radius, 8);
@@ -33,7 +32,19 @@ function PlanetSphere({
 			flatShading: true,
 		});
 		const sphere = new THREE.Mesh(geometry, material);
+		sphere.castShadow = true; // Sphere casts shadow
 		scene.add(sphere);
+
+		// Create a ground plane to receive the shadow
+		const planeGeometry = new THREE.PlaneGeometry(50, 50);
+		const planeMaterial = new THREE.ShadowMaterial({
+			opacity: 0.5, // Semi-transparent shadow
+		});
+		const plane = new THREE.Mesh(planeGeometry, planeMaterial);
+		plane.rotation.x = -Math.PI / 2; // Rotate plane to lie flat
+		plane.position.y = -radius - 0.5; // Position plane below the sphere
+		plane.receiveShadow = true; // Plane receives shadows
+		scene.add(plane);
 
 		// Add lighting
 		const ambientLight = new THREE.AmbientLight(0x404040);
@@ -41,22 +52,23 @@ function PlanetSphere({
 
 		const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
 		directionalLight.position.set(5, 5, 5);
+		directionalLight.castShadow = true; // Light casts shadows
 		scene.add(directionalLight);
+
+		// Shadow properties for the light
+		directionalLight.shadow.mapSize.width = 1024; // Shadow quality
+		directionalLight.shadow.mapSize.height = 1024;
+		directionalLight.shadow.camera.near = 0.5;
+		directionalLight.shadow.camera.far = 50;
 
 		// Position the camera
 		camera.position.z = 3;
 
-		// Calculate rotation speed based on orbital period
-		const baseRotationSpeed = 0.001;
-		const earthOrbitalPeriod = 365.25; // Earth's orbital period in days
-		const rotationSpeed =
-			baseRotationSpeed * (earthOrbitalPeriod / orbitalPeriod);
-
 		// Animation loop
 		const animate = function () {
 			requestAnimationFrame(animate);
-			sphere.rotation.y += 0.01;
 			sphere.rotation.x += 0.01;
+			sphere.rotation.y += 0.01;
 			renderer.render(scene, camera);
 		};
 
@@ -66,7 +78,7 @@ function PlanetSphere({
 		return () => {
 			renderer.dispose();
 		};
-	}, [width, height, radius, color, colormap, orbitalPeriod]);
+	}, [colormap, radius, color, width, height]);
 
 	return (
 		<canvas
