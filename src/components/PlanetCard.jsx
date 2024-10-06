@@ -140,6 +140,7 @@ function PlanetCard({ data }) {
 						radius={data?.pl_rade / 21}
 						color={temperatureToColor(data?.pl_eqt)}
 						path={'high-mass.jpg'}
+						orbitalPeriod={data.pl_orbper}
 					/>
 				</Box>
 			</CardContent>

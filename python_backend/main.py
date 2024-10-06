@@ -41,6 +41,7 @@ async def handle_get_stars(query: StarQuery):
 
 @app.get("/getPlanets")
 async def handle_get_planets(name: str = Query(None), detailed: bool = Query(False)):
+
     result = "Not Found"
     if not name:
         result = get_planets()

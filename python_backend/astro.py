@@ -129,6 +129,7 @@ def get_planets(discover_method: str = None):
     where_conditions.append("pl_masse is not null")
     where_conditions.append("pl_radj is not null")
     where_conditions.append("pl_eqt is not null")
+    where_conditions.append("pl_orbper is not null")
     # Combine where conditions with 'AND'
     where_query = " AND ".join(where_conditions) if where_conditions else None
     print(where_query)
@@ -136,7 +137,7 @@ def get_planets(discover_method: str = None):
     # Define the parameters for the query
     query_params = {
         "table": "pscomppars",
-        "select": "top 100 pl_name,disc_year,ra,dec,discoverymethod,pl_rade,pl_radj,pl_masse,pl_massj, pl_eqt",
+        "select": "top 100 pl_name,disc_year,ra,dec,discoverymethod,pl_rade,pl_radj,pl_masse,pl_massj, pl_eqt,pl_orbper",
         "cache": True,
     }
 
@@ -161,6 +162,7 @@ def get_planets(discover_method: str = None):
             "pl_masse": float(row["pl_masse"]),
             "pl_massj": float(row["pl_massj"]),
             "pl_eqt": float(row["pl_eqt"].value),
+            "pl_orbper": float(row["pl_orbper"].value),
         }
         for row in result
     ]
@@ -180,19 +182,18 @@ def getPlanetByQuery(name: str, detailed: bool = False):
     # where_clause.append("pl_eqt is not null")
     where_query = " AND ".join(where_clause) if where_clause else None
     query_params = {
-            "table": "pscomppars",
-            "select": "top 10 pl_name,disc_year,ra,dec,discoverymethod,pl_rade,pl_radj,pl_masse,pl_massj,pl_eqt",
-            "cache": True,
-            "where": where_query,
-    }
-    if (detailed):
-        query_params = {
         "table": "pscomppars",
-        "select": "top 10 pl_name,disc_year,ra,dec,discoverymethod,pl_rade,pl_radj,pl_masse,pl_massj,pl_eqt,pl_orbper,pl_rvamp,pl_dens,pl_angsep",
+        "select": "top 10 pl_name,disc_year,ra,dec,discoverymethod,pl_rade,pl_radj,pl_masse,pl_massj,pl_eqt",
         "cache": True,
         "where": where_query,
-        }       
-     
+    }
+    if detailed:
+        query_params = {
+            "table": "pscomppars",
+            "select": "top 10 pl_name,disc_year,ra,dec,discoverymethod,pl_rade,pl_radj,pl_masse,pl_massj,pl_eqt,pl_orbper,pl_rvamp,pl_dens,pl_angsep",
+            "cache": True,
+            "where": where_query,
+        }
 
     result = NasaExoplanetArchive.query_criteria(**query_params)
     if detailed:
@@ -216,7 +217,7 @@ def getPlanetByQuery(name: str, detailed: bool = False):
             for row in result
         ]
     else:
-         result = [
+        result = [
             {
                 "name": row["pl_name"],
                 "ra": float(row["ra"].value),
@@ -227,19 +228,21 @@ def getPlanetByQuery(name: str, detailed: bool = False):
                 "pl_radj": float(row["pl_radj"].value),
                 "pl_masse": float(row["pl_masse"]),
                 "pl_massj": float(row["pl_massj"]),
-                "pl_eqt": float(row["pl_eqt"].value)
+                "pl_eqt": float(row["pl_eqt"].value),
             }
             for row in result
         ]
     # Filter out None or NaN values
     filtered_result = [
-    {
-        k: (
-            "no information" if v is None or (isinstance(v, float) and math.isnan(v)) else v
-        )
-        for k, v in planet.items()
-    }
-    for planet in result
+        {
+            k: (
+                "no information"
+                if v is None or (isinstance(v, float) and math.isnan(v))
+                else v
+            )
+            for k, v in planet.items()
+        }
+        for planet in result
     ]
     print(filtered_result)
     return filtered_result
