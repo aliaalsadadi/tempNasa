@@ -20,7 +20,7 @@ function PlanetCard({ data }) {
 		<Card
 			variant="outlined"
 			sx={{
-				width: 480, // Fixed width
+				width: 'auto', // Fixed width
 				height: 240, // Fixed height
 				display: 'flex',
 				flexDirection: 'column',
@@ -47,30 +47,79 @@ function PlanetCard({ data }) {
 				>
 					{/* Left side: Planet details */}
 					<Box>
-						<Typography variant="h5" component="div" gutterBottom sx={{ fontWeight: 'bold', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+						<Typography
+							variant="h5"
+							component="div"
+							gutterBottom
+							sx={{
+								fontWeight: 'bold',
+								overflow: 'hidden',
+								textOverflow: 'ellipsis',
+								whiteSpace: 'nowrap',
+							}}
+						>
 							{data?.name}
 						</Typography>
 
 						{/* Discovery Year */}
-						<Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+						<Box
+							sx={{
+								display: 'flex',
+								alignItems: 'center',
+								mb: 1,
+							}}
+						>
 							<Star fontSize="small" />
-							<Typography variant="body2" color="text.secondary" sx={{ ml: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+							<Typography
+								variant="body2"
+								color="text.secondary"
+								sx={{
+									ml: 1,
+									overflow: 'hidden',
+									textOverflow: 'ellipsis',
+									whiteSpace: 'nowrap',
+								}}
+							>
 								Discovery Year: {data?.disc_year}
 							</Typography>
 						</Box>
 
 						{/* Discovery Method */}
-						<Typography variant="body2" color="text.secondary" sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+						<Typography
+							variant="body2"
+							color="text.secondary"
+							sx={{
+								overflow: 'hidden',
+								textOverflow: 'ellipsis',
+								whiteSpace: 'nowrap',
+							}}
+						>
 							Discovery Method: {data?.discover_method}
 						</Typography>
 
 						{/* Planet Radius */}
-						<Typography variant="body2" color="text.secondary" sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+						<Typography
+							variant="body2"
+							color="text.secondary"
+							sx={{
+								overflow: 'hidden',
+								textOverflow: 'ellipsis',
+								whiteSpace: 'nowrap',
+							}}
+						>
 							Radius: {data?.pl_rade} 🌍
 						</Typography>
 
 						{/* Planet Mass */}
-						<Typography variant="body2" color="text.secondary" sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+						<Typography
+							variant="body2"
+							color="text.secondary"
+							sx={{
+								overflow: 'hidden',
+								textOverflow: 'ellipsis',
+								whiteSpace: 'nowrap',
+							}}
+						>
 							Mass: {data?.pl_masse} 🌍
 						</Typography>
 					</Box>
@@ -80,8 +129,9 @@ function PlanetCard({ data }) {
 						<PlanetSphere
 							radius={data?.pl_rade / 21}
 							color={temperatureToColor(data?.pl_eqt)}
-							path={"high-mass.jpg"}
-						/>					</Box>
+							path={'high-mass.jpg'}
+						/>{' '}
+					</Box>
 				</Box>
 			</CardContent>
 			<CardActions>
@@ -117,7 +167,6 @@ function PlanetCard({ data }) {
 		</Card>
 	);
 }
-
 
 // function categorizeStar(radius, temperature, mass) {
 // 	const categories = {
@@ -166,17 +215,20 @@ function PlanetCard({ data }) {
 // 	return filePath + '.jpg'; // Assuming the files are PNG images
 // }
 
-
 function temperatureToColor(temperatureKelvin) {
 	// Define temperature thresholds
-	const coldThreshold = 150;   // Lower threshold for cold (blue)
-	const hotThreshold = 600;    // Upper threshold for hot (red)
+	const coldThreshold = 150; // Lower threshold for cold (blue)
+	const hotThreshold = 600; // Upper threshold for hot (red)
 
 	// Clamp the temperature to avoid extreme values
-	const clampedTemp = Math.max(coldThreshold, Math.min(temperatureKelvin, hotThreshold));
+	const clampedTemp = Math.max(
+		coldThreshold,
+		Math.min(temperatureKelvin, hotThreshold),
+	);
 
 	// Map temperature to color values
-	const normalizedTemp = (clampedTemp - coldThreshold) / (hotThreshold - coldThreshold);
+	const normalizedTemp =
+		(clampedTemp - coldThreshold) / (hotThreshold - coldThreshold);
 
 	// Calculate RGB values with more emphasis on different ranges
 	let r, g, b;
@@ -194,7 +246,7 @@ function temperatureToColor(temperatureKelvin) {
 	} else {
 		// Transition from yellow to red
 		r = 255; // Red stays fully on
-		g = Math.floor(255 * (1 - ((normalizedTemp - 0.66) * 3))); // Green decreases to 0
+		g = Math.floor(255 * (1 - (normalizedTemp - 0.66) * 3)); // Green decreases to 0
 		b = 0; // Blue stays at 0
 	}
 

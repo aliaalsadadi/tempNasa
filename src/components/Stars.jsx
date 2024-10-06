@@ -118,26 +118,26 @@ const Stars = forwardRef(({ data, setActiveStar, constellating }, ref) => {
 	}, [stars]);
 
 	// Play background audio on component mount
-	useEffect(() => {
-		const backgroundAudio = new Audio('/src/assets/engine-humming-sfx.mp3');
-		backgroundAudio.loop = true;
+	// useEffect(() => {
+	// 	const backgroundAudio = new Audio('/src/assets/engine-humming-sfx.mp3');
+	// 	backgroundAudio.loop = true;
 
-		const playAudio = () => {
-			backgroundAudio.play().catch(error => {
-				console.error('Audio play failed:', error);
-			});
-			// Remove the event listener after first interaction
-			document.removeEventListener('click', playAudio);
-		};
+	// 	const playAudio = () => {
+	// 		backgroundAudio.play().catch(error => {
+	// 			console.error('Audio play failed:', error);
+	// 		});
+	// 		// Remove the event listener after first interaction
+	// 		document.removeEventListener('click', playAudio);
+	// 	};
 
-		// Add event listener for user interaction
-		document.addEventListener('click', playAudio);
+	// 	// Add event listener for user interaction
+	// 	document.addEventListener('click', playAudio);
 
-		return () => {
-			backgroundAudio.pause();
-			document.removeEventListener('click', playAudio);
-		};
-	}, []);
+	// 	return () => {
+	// 		backgroundAudio.pause();
+	// 		document.removeEventListener('click', playAudio);
+	// 	};
+	// }, []);
 
 	// useEffect(() => {
 	// 	if (!groupRef.current || stars.length === 0) return;
@@ -162,9 +162,9 @@ const Stars = forwardRef(({ data, setActiveStar, constellating }, ref) => {
 	// 	// Update camera rotation if needed
 	// }, []);
 
-	const playClickSfx = () => {
-		new Audio('/src/assets/star-click-sfx.mp3').play();
-	};
+	// const playClickSfx = () => {
+	// 	new Audio('/src/assets/star-click-sfx.mp3').play();
+	// };
 	const deleteLines = () => {
 		lines.forEach(line => {
 			scene.remove(line);
@@ -205,7 +205,6 @@ const Stars = forwardRef(({ data, setActiveStar, constellating }, ref) => {
 			if (!constellating) {
 				// If not constellating, show star information
 				setActiveStar(starData);
-				playClickSfx();
 			} else {
 				// If constellating, track the clicked stars and draw a line
 				setSelectedStars(prevStars => {

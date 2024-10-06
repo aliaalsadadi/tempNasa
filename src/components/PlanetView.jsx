@@ -14,7 +14,7 @@ function PlanetView() {
 	const [currentPage, setCurrentPage] = useState(1);
 	const [searchQuery, setSearchQuery] = useState('');
 	const apiUrl = `${import.meta.env.VITE_API_URL}/getPlanets`;
-	console.log(apiUrl);
+	// console.log(apiUrl);
 	const itemsPerPage = 6;
 
 	const planetCardsRef = useRef(null); // Reference for scrolling
